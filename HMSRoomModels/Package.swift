@@ -15,14 +15,13 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/100mslive/Popovers", branch:"main")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "HMSRoomModels",
-            dependencies: ["HMSSDK", "HMSAnalyticsSDK", "WebRTC", "HMSHLSPlayerSDK", "Lottie", "Popovers"]
+            dependencies: ["HMSSDK", "HMSAnalyticsSDK", "WebRTC"]
         ),
         .binaryTarget(
             name: "HMSSDK",
@@ -38,15 +37,6 @@ let package = Package(
             name: "WebRTC",
             url: "https://github.com/100mslive/webrtc-ios/releases/download/1.0.5116/WebRTC.xcframework.zip",
             checksum: "5f38579bb743b089d95017fa56dc76f8e3e440dbdd56061db04c26448262cfee"
-        ),
-        .binaryTarget(
-            name: "HMSHLSPlayerSDK",
-            url: "https://github.com/100mslive/100ms-ios-hls-sdk/releases/download/0.0.2/HMSHLSPlayerSDK.xcframework.zip",
-            checksum: "470932129c8dd358ebbe748bc1e05739f33c642779513fee17e42a117329dce2"
-        ),
-        .binaryTarget(
-            name: "Lottie",
-            url: "https://github.com/airbnb/lottie-ios/releases/download/4.2.0/Lottie.xcframework.zip",
-            checksum: "4db3dee208f6213e5c1681f2314c7ed96d466d9b9adfe5cd0030309515075443")
+        )
     ]
 )
