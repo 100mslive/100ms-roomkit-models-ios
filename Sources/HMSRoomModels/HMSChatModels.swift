@@ -19,7 +19,7 @@ public struct HMSMessageModel: Hashable, Identifiable {
     static var formatter = DateFormatter()
     
 #if !Preview
-    init(message: HMSMessage) {
+    public init(message: HMSMessage) {
         self.message = message.message
         let name = message.sender?.name ?? "bot"
         self.sender = name
