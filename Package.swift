@@ -10,7 +10,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "HMSRoomModels",
-            targets: ["HMSRoomModels", "HMSSDK", "HMSAnalyticsSDK", "WebRTC"]),
+            targets: ["HMSRoomModels", "HMSRoomModelsDependencies"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -21,7 +21,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "HMSRoomModels",
-            dependencies: ["HMSSDK", "HMSAnalyticsSDK", "WebRTC"]
+            dependencies: []
         ),
         .binaryTarget(
             name: "HMSSDK",
@@ -37,6 +37,7 @@ let package = Package(
             name: "WebRTC",
             url: "https://github.com/100mslive/webrtc-ios/releases/download/1.0.5116/WebRTC.xcframework.zip",
             checksum: "5f38579bb743b089d95017fa56dc76f8e3e440dbdd56061db04c26448262cfee"
-        )
+        ),
+        .target(name: "HMSRoomModelsDependencies", dependencies: ["HMSSDK", "HMSAnalyticsSDK", "WebRTC", "HMSAnalyticsSDK"], path: "dependencies")
     ]
 )
