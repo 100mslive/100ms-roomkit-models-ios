@@ -21,8 +21,5 @@ let package = Package(
         .target(
             name: "HMSRoomModels",
             dependencies: []),
-        .testTarget(
-            name: "HMSRoomModelsTests",
-            dependencies: ["HMSRoomModels"]),
     ]
 )
