@@ -9,7 +9,6 @@
 import SwiftUI
 import HMSSDK
 
-#if !Preview
 @MainActor
 extension HMSPeerModel {
     func insert(track: HMSTrack) {
@@ -89,4 +88,3 @@ extension HMSPeerModel {
         roomModel?.objectWillChange.send()
     }
 }
-#endif

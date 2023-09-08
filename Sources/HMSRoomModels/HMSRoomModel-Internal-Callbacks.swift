@@ -8,7 +8,6 @@
 import Combine
 import HMSSDK
 
-#if !Preview
 extension HMSRoomModel {
     private func getAuthToken(roomCode: String) async throws -> String {
         
@@ -265,4 +264,3 @@ extension HMSRoomModel: HMSPreviewListener {
         updateStreamingState()
     }
 }
-#endif

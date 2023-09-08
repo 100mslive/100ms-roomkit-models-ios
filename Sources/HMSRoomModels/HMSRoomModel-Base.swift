@@ -9,7 +9,6 @@
 import SwiftUI
 import HMSSDK
 
-#if !Preview
 // Convenience computed properties
 @MainActor
 extension HMSRoomModel {
@@ -55,4 +54,3 @@ extension HMSRoomModel {
         userRole?.name.hasPrefix("hls-") ?? false
     }
 }
-#endif
