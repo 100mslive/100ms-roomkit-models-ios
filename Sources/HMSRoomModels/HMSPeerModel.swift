@@ -106,7 +106,6 @@ public class HMSPeerModel: ObservableObject {
         self.isLocal = isLocal
         self.metadata = HMSStorage<String, Any>() { _ in}
         self.isVideoDegraded = false
-        self.status = status
     }
     var isLocal = false
 #endif

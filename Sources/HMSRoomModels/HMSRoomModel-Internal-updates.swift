@@ -9,6 +9,7 @@
 import SwiftUI
 import HMSSDK
 
+#if !Preview
 @MainActor
 extension HMSRoomModel {
     func insert(peer: HMSPeer) {
@@ -164,3 +165,4 @@ extension HMSRoomModel {
         peerModel.updateDownlinkQuality()
     }
 }
+#endif

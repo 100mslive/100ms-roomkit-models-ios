@@ -9,6 +9,7 @@
 import SwiftUI
 import HMSSDK
 
+#if !Preview
 // Convenience computed properties
 extension HMSPeerModel {
     public var audioTrackModels: [HMSTrackModel] {
@@ -38,3 +39,4 @@ extension HMSPeerModel {
         }
     }
 }
+#endif

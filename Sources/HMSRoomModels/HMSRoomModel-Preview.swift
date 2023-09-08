@@ -39,8 +39,6 @@ extension HMSRoomModel {
         room.isUserJoined = true
         room.userCanEndRoom = true
         
-        room.pinnedMessage = "This :  is a pinned message"
-        
         room.messages = [HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(message: "last")]
         
         room.userName = "Pawan's iOS"
