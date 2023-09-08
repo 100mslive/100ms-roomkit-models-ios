@@ -29,9 +29,3 @@ extension HMSRoomModel {
 #endif
     }
 }
-
-extension HMSRole {
-    public var canPublish: Bool {
-        !(publishSettings.allowed?.isEmpty ?? true)
-    }
-}
