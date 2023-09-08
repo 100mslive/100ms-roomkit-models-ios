@@ -12,7 +12,7 @@ import HMSAnalyticsSDK
 
 public class HMSRoomOptions: ObservableObject {
     
-    public var appGroupName: String?
+    var appGroupName: String?
     
     public init(appGroupName: String? = nil) {
         self.appGroupName = appGroupName
