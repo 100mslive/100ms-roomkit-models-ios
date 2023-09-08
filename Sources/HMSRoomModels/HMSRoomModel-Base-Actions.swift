@@ -308,7 +308,7 @@ extension HMSRoomModel {
     
     public func declineChangeRoleRequest() async throws {
 #if !Preview
-        guard let request = roleChangeRequests.first else { return }
+        guard roleChangeRequests.first != nil else { return }
         previewAudioTrack = nil
         previewVideoTrack = nil
         sdk.cancelPreview()

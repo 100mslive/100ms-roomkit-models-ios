@@ -116,8 +116,8 @@ public class HMSSharedSessionStore {
                     // Store observer so we can stop observing
                     self.keyObservations[key] = object
                 }
-                else {
-                    print(error?.localizedDescription)
+                else if let error = error {
+                    print(error.localizedDescription)
                 }
             }
         }
