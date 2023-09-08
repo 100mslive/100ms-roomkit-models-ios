@@ -55,6 +55,7 @@ public class HMSRoomModel: ObservableObject {
     @Published public var isMicMute: Bool = true
     @Published public var isCameraMute: Bool = true
     @Published public var userName: String = ""
+    @Published public var isPreviewJoined: Bool = false
     @Published public var isUserJoined: Bool = false
     @Published public var isUserSharingScreen: Bool = false
     @Published public var userCanEndRoom: Bool = false
@@ -125,6 +126,7 @@ public class HMSRoomModel: ObservableObject {
         isMicMute = true
         isCameraMute = true
         isUserJoined = false
+        isPreviewJoined = false
         
         userRole = nil
         
@@ -162,7 +164,9 @@ public class HMSRoomModel: ObservableObject {
         inMemoryStore.removeAll()
     }
     
-    let roomCode: String
+    let roomCode: String?
+    let providedToken: String?
+    
     var authToken: String?
     
     let sdk: HMSSDK
@@ -170,6 +174,26 @@ public class HMSRoomModel: ObservableObject {
     
     public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
         self.roomCode = roomCode
+        self.providedToken = nil
+        
+        self.sdk = HMSSDK.build() { sdk in
+            if let groupName = options?.appGroupName {
+                sdk.appGroup = groupName
+            }
+            builder?(sdk)
+        }
+        
+        sharedSessionStore = HMSSharedSessionStore()
+        sharedSessionStore.roomModel = self
+        
+        #if !Preview
+        sdk.logger = self
+        #endif
+    }
+    
+    public init(token: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
+        self.roomCode = nil
+        self.providedToken = token
         
         self.sdk = HMSSDK.build() { sdk in
             if let groupName = options?.appGroupName {

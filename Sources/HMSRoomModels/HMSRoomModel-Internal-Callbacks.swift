@@ -8,75 +8,6 @@
 import Combine
 import HMSSDK
 
-extension HMSRoomModel {
-    private func getAuthToken(roomCode: String) async throws -> String {
-        
-        if let authToken = authToken {
-            return authToken
-        }
-        else {
-            return try await withCheckedThrowingContinuation({ continuation in
-                
-                sdk.getAuthTokenByRoomCode(roomCode) { authToken, error in
-                    guard let authToken = authToken else {
-                        continuation.resume(throwing: error!);
-                        return
-                    }
-                    
-                    self.authToken = authToken
-                    continuation.resume(returning: authToken)
-                }
-            })
-        }
-    }
-    
-    public func getRoomLayout() async throws -> HMSRoomLayout {
-        let authToken = try await getAuthToken(roomCode: roomCode)
-        
-        return try await withCheckedThrowingContinuation({ continuation in
-            self.sdk.getRoomLayout(using: authToken) { roomLayout, error in
-                guard let roomLayout = roomLayout else {
-                    continuation.resume(throwing: error!);
-                    return
-                }
-                
-                continuation.resume(returning: roomLayout)
-            }
-        })
-    }
-    
-    public func preview() async throws {
-        let authToken = try await getAuthToken(roomCode: roomCode)
-        self.sdk.preview(config: HMSConfig(authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil), delegate: self)
-    }
-    
-    public func join(userName: String) async throws {
-        let authToken = try await getAuthToken(roomCode: roomCode)
-        
-        self.sdk.join(config: HMSConfig(userName: userName, authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil), delegate: self)
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            cancellable = self.$isUserJoined.dropFirst().sink { [weak self] isUserJoined in
-                if isUserJoined {
-                    continuation.resume()
-                    self?.cancellable = nil
-                }
-                else {
-                    if let lastError = self?.lastError {
-                        continuation.resume(throwing: lastError)
-                        self?.cancellable = nil
-                    }
-                    else {
-                        continuation.resume(throwing: NSError())
-                        self?.cancellable = nil
-                    }
-                }
-            }
-        }
-    }
-}
-
 extension HMSRoomModel: HMSUpdateListener {
     
     @MainActor public func on(join room: HMSRoom) {
@@ -187,6 +118,7 @@ extension HMSRoomModel: HMSUpdateListener {
         if let error = error as? HMSError {
             if error.isTerminal {
                 isUserJoined = false
+                isPreviewJoined = false
             }
         }
     }
