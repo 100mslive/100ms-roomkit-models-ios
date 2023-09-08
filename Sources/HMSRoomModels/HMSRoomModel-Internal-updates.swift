@@ -103,7 +103,6 @@ extension HMSRoomModel {
     
     func updateMetadata() {
         guard let room = room else { assertionFailure("shouldn't be here"); return }
-        peerCount = room.peerCount
         roomID = room.roomID
         name = room.name
         sessionID = room.sessionID
