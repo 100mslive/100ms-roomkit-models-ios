@@ -124,7 +124,6 @@ public class HMSRoomModel: ObservableObject {
         
         isMicMute = true
         isCameraMute = true
-        userName = ""
         isUserJoined = false
         
         userRole = nil
