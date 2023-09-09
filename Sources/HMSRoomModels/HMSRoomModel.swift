@@ -51,15 +51,7 @@ public class HMSRoomModel: ObservableObject {
     @Published public var isUserJoined: Bool = false
     @Published public var isUserSharingScreen: Bool = false
     @Published public var userCanEndRoom: Bool = false
-    public var userCanStartStopHLSStream: Bool {
-        localPeerModel?.canStartStopHLSStream ?? false
-    }
-    public var userCanStartStopRecording: Bool {
-        localPeerModel?.canStartStopRecording ?? false
-    }
-    public var userCanShareScreen: Bool {
-        localPeerModel?.canScreenShare ?? false
-    }
+    
 #if !Preview
     @Published public var userRole: HMSRole?
 #endif

@@ -21,6 +21,20 @@ extension HMSRoomModel {
         peerModels.filter{!$0.isLocal}
     }
     
+    public var remotePeersSharingScreen: [HMSPeerModel] {
+        peersSharingScreen.filter{!$0.isLocal}
+    }
+    
+    public var userCanStartStopHLSStream: Bool {
+        localPeerModel?.canStartStopHLSStream ?? false
+    }
+    public var userCanStartStopRecording: Bool {
+        localPeerModel?.canStartStopRecording ?? false
+    }
+    public var userCanShareScreen: Bool {
+        localPeerModel?.canScreenShare ?? false
+    }
+    
     public var remotePeerModelsExcludingViewers: [HMSPeerModel] {
 #if !Preview
         remotePeerModels.filter{$0.role?.canPublish ?? false}
