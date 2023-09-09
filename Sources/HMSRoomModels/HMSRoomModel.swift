@@ -10,15 +10,6 @@ import Combine
 import HMSSDK
 import HMSAnalyticsSDK
 
-public class HMSRoomOptions: ObservableObject {
-    
-    var appGroupName: String?
-    
-    public init(appGroupName: String? = nil) {
-        self.appGroupName = appGroupName
-    }
-}
-
 public enum HMSRoomState {
     
     public enum LeaveReason {
