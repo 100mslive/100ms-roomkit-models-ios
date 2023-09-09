@@ -163,7 +163,7 @@ public class HMSRoomModel: ObservableObject {
     let sdk: HMSSDK
     var room: HMSRoom? = nil
     
-    let options: HMSRoomOptions?
+    public let options: HMSRoomOptions?
     public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
         self.roomCode = roomCode
         self.providedToken = nil
