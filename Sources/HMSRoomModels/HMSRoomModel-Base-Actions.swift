@@ -55,19 +55,19 @@ extension HMSRoomModel {
         
         return try await withCheckedThrowingContinuation { continuation in
             
-            cancellable = self.$isPreviewJoined.dropFirst().sink { [weak self] isPreviewJoined in
+            previewCancellable = self.$isPreviewJoined.dropFirst().sink { [weak self] isPreviewJoined in
                 if isPreviewJoined {
                     continuation.resume()
-                    self?.cancellable = nil
+                    self?.previewCancellable = nil
                 }
                 else {
                     if let lastError = self?.lastError {
                         continuation.resume(throwing: lastError)
-                        self?.cancellable = nil
+                        self?.previewCancellable = nil
                     }
                     else {
                         continuation.resume(throwing: NSError())
-                        self?.cancellable = nil
+                        self?.previewCancellable = nil
                     }
                 }
             }
@@ -82,19 +82,19 @@ extension HMSRoomModel {
         
         return try await withCheckedThrowingContinuation { continuation in
             
-            cancellable = self.$isUserJoined.dropFirst().sink { [weak self] isUserJoined in
+            joinCancellable = self.$isUserJoined.dropFirst().sink { [weak self] isUserJoined in
                 if isUserJoined {
                     continuation.resume()
-                    self?.cancellable = nil
+                    self?.joinCancellable = nil
                 }
                 else {
                     if let lastError = self?.lastError {
                         continuation.resume(throwing: lastError)
-                        self?.cancellable = nil
+                        self?.joinCancellable = nil
                     }
                     else {
                         continuation.resume(throwing: NSError())
-                        self?.cancellable = nil
+                        self?.joinCancellable = nil
                     }
                 }
             }

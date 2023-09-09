@@ -32,7 +32,8 @@ public enum HMSRoomRecordingState {
 
 public class HMSRoomModel: ObservableObject {
     
-    internal var cancellable: AnyCancellable?
+    internal var joinCancellable: AnyCancellable?
+    internal var previewCancellable: AnyCancellable?
     
     deinit {
         print("pawan: deinit")
