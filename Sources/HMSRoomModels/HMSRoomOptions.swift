@@ -9,8 +9,8 @@ import Foundation
 
 public class HMSRoomOptions: ObservableObject {
     
-    var appGroupName: String?
-    var preferredExtensionName: String?
+    public private(set) var appGroupName: String?
+    public private(set) var preferredExtensionName: String?
     
     public init(appGroupName: String? = nil, preferredExtensionName: String? = nil) {
         self.appGroupName = appGroupName
