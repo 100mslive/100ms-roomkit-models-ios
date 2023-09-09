@@ -10,10 +10,10 @@ import Foundation
 public class HMSRoomOptions: ObservableObject {
     
     public let appGroupName: String?
-    public let preferredExtensionName: String?
+    public let screenShareBroadcastExtensionBundleId: String?
     
-    public init(appGroupName: String? = nil, preferredExtensionName: String? = nil) {
+    public init(appGroupName: String? = nil, screenShareBroadcastExtensionBundleId: String? = nil) {
         self.appGroupName = appGroupName
-        self.preferredExtensionName = preferredExtensionName
+        self.screenShareBroadcastExtensionBundleId = screenShareBroadcastExtensionBundleId
     }
 }
