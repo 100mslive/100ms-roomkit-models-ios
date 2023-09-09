@@ -163,9 +163,12 @@ public class HMSRoomModel: ObservableObject {
     let sdk: HMSSDK
     var room: HMSRoom? = nil
     
+    let options: HMSRoomOptions?
     public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
         self.roomCode = roomCode
         self.providedToken = nil
+        
+        self.options = options
         
         self.sdk = HMSSDK.build() { sdk in
             if let groupName = options?.appGroupName {
@@ -185,6 +188,8 @@ public class HMSRoomModel: ObservableObject {
     public init(token: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
         self.roomCode = nil
         self.providedToken = token
+        
+        self.options = options
         
         self.sdk = HMSSDK.build() { sdk in
             if let groupName = options?.appGroupName {
