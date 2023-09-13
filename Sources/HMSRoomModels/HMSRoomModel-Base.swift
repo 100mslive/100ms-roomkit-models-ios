@@ -24,6 +24,7 @@ extension HMSRoomModel {
         }
     }
     
+    #if !Preview
     public var localAudioTrackModel: HMSTrackModel? {
         
         if let previewAudioTrack = previewAudioTrack {
@@ -53,4 +54,5 @@ extension HMSRoomModel {
     public var isUserHLSViewer: Bool {
         userRole?.name.hasPrefix("hls-") ?? false
     }
+    #endif
 }

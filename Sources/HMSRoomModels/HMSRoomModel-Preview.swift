@@ -20,26 +20,24 @@ extension HMSRoomModel {
         false
     }
     
-    enum AdditionalPeers {
+    public enum AdditionalPeers {
         case screen
         case prominent
     }
     
-    static let localPeer = HMSPeerModel(name: "Local Peer", isLocal: true)
+    public static let localPeer = HMSPeerModel(name: "Local Peer", isLocal: true)
     private static let prominentPeers = [HMSPeerModel(name: "Prominent Peer \(1)"), HMSPeerModel(name: "Prominent Peer \(2)"), HMSPeerModel(name: "Prominent Peer \(3)"), HMSPeerModel(name: "Prominent Peer \(4)")]
-    static func prominentPeers(_ count: Int) -> [HMSPeerModel] {
+    public static func prominentPeers(_ count: Int) -> [HMSPeerModel] {
         Array(prominentPeers.prefix(count))
     }
-    static var screenSharingPeers = [HMSPeerModel]()
-    static func dummyRoom(_ remotePeerCount: Int, _ additionalPeers: [AdditionalPeers] = []) -> HMSRoomModel {
+    public static var screenSharingPeers = [HMSPeerModel]()
+    public static func dummyRoom(_ remotePeerCount: Int, _ additionalPeers: [AdditionalPeers] = []) -> HMSRoomModel {
         
         let room = HMSRoomModel()
         room.recordingState = .recording
         room.isBeingStreamed = true
         room.isUserJoined = true
         room.userCanEndRoom = true
-        
-        room.pinnedMessage = "This :  is a pinned message"
         
         room.messages = [HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(message: "last")]
         

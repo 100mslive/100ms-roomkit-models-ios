@@ -11,6 +11,7 @@ import HMSSDK
 
 // Convenience computed properties
 extension HMSPeerModel {
+    #if !Preview
     public var audioTrackModels: [HMSTrackModel] {
         trackModels.filter{$0.track is HMSAudioTrack}
     }
@@ -23,18 +24,23 @@ extension HMSPeerModel {
     public var isSharingScreen: Bool {
         trackModels.contains{$0.track.source == HMSCommonTrackSource.screen}
     }
+    #endif
 }
 
 // Mute and unmute
 extension HMSPeerModel {
     func mute(track: HMSTrack) {
+#if !Preview
         if let index = trackModels.firstIndex(where: {$0.track == track}) {
             trackModels[index].isMute = true
         }
+#endif
     }
     func unmute(track: HMSTrack) {
+#if !Preview
         if let index = trackModels.firstIndex(where: {$0.track == track}) {
             trackModels[index].isMute = false
         }
+#endif
     }
 }

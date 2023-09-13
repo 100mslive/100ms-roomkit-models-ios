@@ -97,8 +97,8 @@ public class HMSPeerModel: ObservableObject {
         peer.isLocal
     }
 #else
-    let role: PreviewRoleModel?
-    init(name: String? = nil, role: PreviewRoleModel = PreviewRoleModel(name: "host"), isLocal: Bool = false) {
+    public var role: PreviewRoleModel?
+    public init(name: String? = nil, role: PreviewRoleModel = PreviewRoleModel(name: "host"), isLocal: Bool = false) {
         self.id = UUID().uuidString
         self.name = name ?? "Participant's Name"
         self.canMute = true
@@ -106,9 +106,8 @@ public class HMSPeerModel: ObservableObject {
         self.isLocal = isLocal
         self.metadata = HMSStorage<String, Any>() { _ in}
         self.isVideoDegraded = false
-        self.status = status
     }
-    var isLocal = false
+    public var isLocal = false
 #endif
 }
 
@@ -124,9 +123,13 @@ extension HMSPeerModel: Hashable, Identifiable {
 
 #if Preview
 public struct PreviewRoleModel {
-    var name: String
-    var permissions = HMSPreviewPermissions()
-    var canPublish = true
+    public let name: String
+    public let permissions = HMSPreviewPermissions()
+    public let canPublish = true
+    
+    public init(name: String) {
+        self.name = name
+    }
 }
 
 public struct HMSPreviewPermissions {
