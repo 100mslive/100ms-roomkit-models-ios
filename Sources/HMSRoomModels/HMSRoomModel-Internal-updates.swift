@@ -12,7 +12,7 @@ import HMSSDK
 @MainActor
 extension HMSRoomModel {
     func insert(peer: HMSPeer) {
-        
+#if !Preview
         let peerModel = HMSPeerModel(peer: peer, roomModel: self)
         
         if peer.isLocal {
@@ -34,11 +34,14 @@ extension HMSRoomModel {
             updateLocalMuteState()
             updateLocalRole()
         }
+        #endif
     }
     
     func remove(peer: HMSPeer) {
+#if !Preview
         peerModels.removeAll{$0.peer == peer}
         didChangeScreenSharingState(for:  HMSPeerModel(peer: peer, roomModel: self), state: .removed)
+        #endif
     }
     
     func updateLocalMuteState() {
@@ -47,7 +50,9 @@ extension HMSRoomModel {
     }
     
     func updateLocalRole() {
+#if !Preview
         userRole = localPeerModel?.role
+        #endif
     }
     
     func updateLocalUserName() {
@@ -137,30 +142,38 @@ extension HMSRoomModel {
 @MainActor
 extension HMSRoomModel {
     func updateRole(for peer: HMSPeer) {
+#if !Preview
         guard let peerModel = (peerModels.first{$0.peer == peer}) else { return }
         peerModel.updateRole()
         
         if peerModel.isLocal {
             updateLocalRole()
         }
+        #endif
     }
     
     func updateName(for peer: HMSPeer) {
+#if !Preview
         guard let peerModel = (peerModels.first{$0.peer == peer}) else { return }
         peerModel.updateName()
         
         if peerModel.isLocal {
             updateLocalUserName()
         }
+        #endif
     }
     
     func updateMetadata(for peer: HMSPeer) {
+#if !Preview
         guard let peerModel = (peerModels.first{$0.peer == peer}) else { return }
         peerModel.updateMetadata()
+        #endif
     }
     
     func updateNetworkQuality(for peer: HMSPeer) {
+#if !Preview
         guard let peerModel = (peerModels.first{$0.peer == peer}) else { return }
         peerModel.updateDownlinkQuality()
+        #endif
     }
 }

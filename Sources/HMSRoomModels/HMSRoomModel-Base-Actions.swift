@@ -244,12 +244,12 @@ extension HMSRoomModel {
 #endif
     }
     
-#if !Preview
-    public func switchAudioOutput(to device: HMSAudioOutputDevice) throws {
 
+    public func switchAudioOutput(to device: HMSAudioOutputDevice) throws {
+#if !Preview
         try sdk.switchAudioOutput(to: device)
-    }
 #endif
+    }
     
     public func startStreaming() async throws {
 #if !Preview

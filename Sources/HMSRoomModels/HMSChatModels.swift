@@ -29,7 +29,7 @@ public struct HMSMessageModel: Hashable, Identifiable {
     }
 #else
 
-    init(message: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.") {
+    public init(message: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.") {
         self.message = message
         self.sender = "John Doe"
         self.time = HMSMessageModel.formatter.string(from: Date())

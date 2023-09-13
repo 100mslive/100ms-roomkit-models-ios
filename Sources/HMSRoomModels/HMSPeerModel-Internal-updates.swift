@@ -28,7 +28,7 @@ extension HMSPeerModel {
     }
     
     func updateRole() {
-        
+        #if !Preview
         role = peer.role
         updateMetadata()
         
@@ -45,22 +45,27 @@ extension HMSPeerModel {
         }
         
         roomModel?.objectWillChange.send()
+        #endif
     }
     
     func updateName() {
+        #if !Preview
         name = peer.name
         
         roomModel?.objectWillChange.send()
+        #endif
     }
     
     func updateDownlinkQuality() {
+#if !Preview
         downlinkQuality = peer.networkQuality?.downlinkQuality
         
         roomModel?.objectWillChange.send()
+        #endif
     }
     
     nonisolated func updateMetadata() {
-        
+#if !Preview
         guard let metadataString = peer.metadata, let data = metadataString.data(using: .utf8), let newMetadata = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { return }
         
         // remove keys which do not exist anymore
@@ -75,6 +80,7 @@ extension HMSPeerModel {
             metadata.setValue(element.value, for: element.key)
         }
         roomModel?.objectWillChange.send()
+        #endif
     }
     
     func updateDegradation(for track: HMSTrack, isDegraded: Bool) {

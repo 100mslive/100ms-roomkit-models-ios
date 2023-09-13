@@ -10,9 +10,9 @@ import SwiftUI
 
 #if Preview
 extension HMSPeerModel {
-    var audioTrackModels: [HMSTrackModel] { [HMSTrackModel()] }
-    var regularVideoTrackModels: [HMSTrackModel] { [HMSTrackModel()] }
-    var screenTrackModels: [HMSTrackModel] { [HMSTrackModel()] }
-    var isSharingScreen: Bool { false }
+    public var audioTrackModels: [HMSTrackModel] { [HMSTrackModel()] }
+    public var regularVideoTrackModels: [HMSTrackModel] { [HMSTrackModel()] }
+    public var screenTrackModels: [HMSTrackModel] { [HMSTrackModel()] }
+    public var isSharingScreen: Bool { false }
 }
 #endif

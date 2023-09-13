@@ -11,10 +11,9 @@ import HMSSDK
 
 public class HMSTrackModel: ObservableObject {
     
+    public let id: String
     @Published public var isMute = false
     @Published public var isDegraded = false
-    
-#if !Preview
     
     weak var peerModel: HMSPeerModel?
     public let track: HMSTrack
@@ -24,13 +23,14 @@ public class HMSTrackModel: ObservableObject {
         self.isMute = track.isMute()
         self.peerModel = peerModel
         self.isDegraded = (track as? HMSVideoTrack)?.isDegraded() ?? false
+        self.id = track.trackId
     }
     
-#else
-    let trackId: String
-    init() {
-        trackId = UUID().uuidString
+#if Preview
+    public init() {
+        id = UUID().uuidString
         isMute = true
+        track = .init()
     }
 #endif
 }
@@ -41,14 +41,14 @@ extension HMSTrackModel: Hashable {
 #if !Preview
         lhs.track == rhs.track
 #else
-        lhs.trackId == rhs.trackId
+        lhs.id == rhs.id
 #endif
     }
     public func hash(into hasher: inout Hasher) {
 #if !Preview
         return hasher.combine(track)
 #else
-        return hasher.combine(trackId)
+        return hasher.combine(id)
 #endif
     }
 }

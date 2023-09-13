@@ -101,6 +101,63 @@ public class HMSRoomModel: ObservableObject {
     @Published public var inMemoryStore = [String: Any?]()
     public var inMemoryStaticStore = [String: Any?]()
     
+    let roomCode: String?
+    let providedToken: String?
+    
+    var authToken: String?
+    let sdk: HMSSDK
+    var room: HMSRoom? = nil
+    
+    // Room states
+    @Published public var hlsVariants = [HMSHLSVariant]()
+    // Requests and notifications
+    @Published public var roleChangeRequests = [HMSRoleChangeRequest]()
+    @Published public var changeTrackStateRequests = [HMSChangeTrackStateRequest]()
+    @Published public var removedFromRoomNotification: HMSRemovedFromRoomNotification?
+    
+    public let options: HMSRoomOptions?
+    public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
+        self.roomCode = roomCode
+        self.providedToken = nil
+        
+        self.options = options
+        
+        self.sdk = HMSSDK.build() { sdk in
+            if let groupName = options?.appGroupName {
+                sdk.appGroup = groupName
+            }
+            builder?(sdk)
+        }
+        
+        sharedSessionStore = HMSSharedSessionStore()
+        sharedSessionStore.roomModel = self
+        
+        #if !Preview
+        sdk.logger = self
+        #endif
+    }
+    
+    public init(token: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
+        self.roomCode = nil
+        self.providedToken = token
+        
+        self.options = options
+        
+        self.sdk = HMSSDK.build() { sdk in
+            if let groupName = options?.appGroupName {
+                sdk.appGroup = groupName
+            }
+            builder?(sdk)
+        }
+        
+        sharedSessionStore = HMSSharedSessionStore()
+        sharedSessionStore.roomModel = self
+        
+        #if !Preview
+        sdk.logger = self
+        #endif
+    }
+    
 #if !Preview
     private func resetAllPeerAndRoomStates() {
         
@@ -148,57 +205,6 @@ public class HMSRoomModel: ObservableObject {
         inMemoryStore.removeAll()
     }
     
-    let roomCode: String?
-    let providedToken: String?
-    
-    var authToken: String?
-    
-    let sdk: HMSSDK
-    var room: HMSRoom? = nil
-    
-    public let options: HMSRoomOptions?
-    public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
-        self.roomCode = roomCode
-        self.providedToken = nil
-        
-        self.options = options
-        
-        self.sdk = HMSSDK.build() { sdk in
-            if let groupName = options?.appGroupName {
-                sdk.appGroup = groupName
-            }
-            builder?(sdk)
-        }
-        
-        sharedSessionStore = HMSSharedSessionStore()
-        sharedSessionStore.roomModel = self
-        
-        #if !Preview
-        sdk.logger = self
-        #endif
-    }
-    
-    public init(token: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
-        self.roomCode = nil
-        self.providedToken = token
-        
-        self.options = options
-        
-        self.sdk = HMSSDK.build() { sdk in
-            if let groupName = options?.appGroupName {
-                sdk.appGroup = groupName
-            }
-            builder?(sdk)
-        }
-        
-        sharedSessionStore = HMSSharedSessionStore()
-        sharedSessionStore.roomModel = self
-        
-        #if !Preview
-        sdk.logger = self
-        #endif
-    }
-    
     // Preview states
     @Published public var previewVideoTrack: HMSTrackModel? {
         didSet {
@@ -215,19 +221,16 @@ public class HMSRoomModel: ObservableObject {
         }
     }
     
-    // Room states
-    @Published public var hlsVariants = [HMSHLSVariant]()
     @Published public var roles = [HMSRole]()
     
-    // Requests and notifications
-    @Published public var roleChangeRequests = [HMSRoleChangeRequest]()
-    @Published public var changeTrackStateRequests = [HMSChangeTrackStateRequest]()
-    @Published public var removedFromRoomNotification: HMSRemovedFromRoomNotification?
-    
 #else
-    @Published var roles = [PreviewRoleModel]()
-    init(){
+    @Published public var roles = [PreviewRoleModel]()
+    public init(){
         sharedSessionStore = HMSSharedSessionStore()
+        roomCode = nil
+        providedToken = nil
+        sdk = .build()
+        options = nil
     }
 #endif
 }

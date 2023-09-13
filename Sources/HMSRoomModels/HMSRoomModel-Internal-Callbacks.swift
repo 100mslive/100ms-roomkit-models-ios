@@ -12,7 +12,9 @@ extension HMSRoomModel: HMSUpdateListener {
     
     @MainActor public func on(join room: HMSRoom) {
         assign(room: room)
+#if !Preview
         roles = sdk.roles
+        #endif
         isUserJoined = true
         // Clean up models received during preview
         peerModels.removeAll()
@@ -70,6 +72,7 @@ extension HMSRoomModel: HMSUpdateListener {
     }
     
     @MainActor public func on(track: HMSTrack, update: HMSTrackUpdate, for peer: HMSPeer) {
+        #if !Preview
         switch update {
         case .trackAdded:
             if peer.isLocal && localPeerModel == nil {
@@ -111,6 +114,7 @@ extension HMSRoomModel: HMSUpdateListener {
             }
         @unknown default: break
         }
+        #endif
     }
     
     @MainActor public func on(error: Error) {
@@ -124,6 +128,7 @@ extension HMSRoomModel: HMSUpdateListener {
     }
     
     @MainActor public func on(message: HMSMessage) {
+#if !Preview
         switch message.type {
         case "chat":
             messages.append(message)
@@ -131,10 +136,11 @@ extension HMSRoomModel: HMSUpdateListener {
             serviceMessages.append(message)
             break
         }
+        #endif
     }
     
     @MainActor public func on(updated speakers: [HMSSpeaker]) {
-        
+#if !Preview
         let speakingPeers = peerModels.filter{ peerModel in speakers.map{$0.peer.peerID}.contains(peerModel.peer.peerID)}
         
         let allPreviouslySpeakingPeers = peerModels.filter{$0.isSpeaking}
@@ -147,6 +153,7 @@ extension HMSRoomModel: HMSUpdateListener {
         }
         
         self.speakers = speakingPeers
+        #endif
     }
     
     @MainActor public func onReconnecting() {
@@ -183,6 +190,7 @@ extension HMSRoomModel: HMSUpdateListener {
 extension HMSRoomModel: HMSPreviewListener {
     
     @MainActor public func onPreview(room: HMSRoom, localTracks: [HMSTrack]) {
+#if !Preview
         assign(room: room)
         localTracks.forEach {
             if $0 is HMSAudioTrack {
@@ -194,5 +202,6 @@ extension HMSRoomModel: HMSPreviewListener {
         }
         
         updateStreamingState()
+        #endif
     }
 }
