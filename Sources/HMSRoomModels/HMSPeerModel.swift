@@ -47,6 +47,8 @@ public class HMSPeerModel: ObservableObject {
     @Published public internal(set) var lastSpokenTimestamp: Date = .distantPast
     @Published public internal(set) var isSpeaking: Bool = false
     
+    @Published public internal(set) var isHandRaised: Bool = false
+    
     // in-memory data
     @Published public var inMemoryStore = [String: Any?]()
     public var inMemoryStaticStore = [String: Any?]()
@@ -88,6 +90,7 @@ public class HMSPeerModel: ObservableObject {
         }
         
         self.isVideoDegraded = (peer.videoTrack?.isDegraded()) ?? false
+        self.isHandRaised = peer.isHandRaised
         
         updateMetadata()
         
