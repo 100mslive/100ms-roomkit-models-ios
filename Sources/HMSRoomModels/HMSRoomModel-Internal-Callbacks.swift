@@ -192,6 +192,7 @@ extension HMSRoomModel: HMSPreviewListener {
     @MainActor public func onPreview(room: HMSRoom, localTracks: [HMSTrack]) {
 #if !Preview
         assign(room: room)
+        isPreviewJoined = true
         localTracks.forEach {
             if $0 is HMSAudioTrack {
                 previewAudioTrack = HMSTrackModel(track: $0, peerModel: nil)
