@@ -29,6 +29,12 @@ extension HMSRoomModel {
         if !peerModels.contains(peerModel) {
             peerModels.append(peerModel)
         }
+        else {
+            // replace
+            if let index = peerModels.firstIndex(of: peerModel) {
+                peerModels[index] = peerModel
+            }
+        }
         
         if peer.isLocal {
             updateLocalMuteState()

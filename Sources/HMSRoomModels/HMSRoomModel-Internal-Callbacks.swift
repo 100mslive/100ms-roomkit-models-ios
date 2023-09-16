@@ -16,8 +16,6 @@ extension HMSRoomModel: HMSUpdateListener {
         roles = sdk.roles
         #endif
         isUserJoined = true
-        // Clean up models received during preview
-        peerModels.removeAll()
         
         if localPeerModel == nil {
             if let localPeer = sdk.localPeer {
