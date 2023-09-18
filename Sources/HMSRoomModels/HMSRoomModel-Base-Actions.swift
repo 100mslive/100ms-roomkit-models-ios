@@ -66,6 +66,7 @@ extension HMSRoomModel {
                         self?.previewCancellable = nil
                     }
                     else {
+                        assertionFailure("last error can't be nil if preview failed")
                         continuation.resume(throwing: NSError())
                         self?.previewCancellable = nil
                     }
@@ -93,6 +94,7 @@ extension HMSRoomModel {
                         self?.joinCancellable = nil
                     }
                     else {
+                        assertionFailure("last error can't be nil if join failed")
                         continuation.resume(throwing: NSError())
                         self?.joinCancellable = nil
                     }
@@ -145,13 +147,12 @@ extension HMSRoomModel {
                 
                 guard let self else { return }
                 
-                guard success else {
-                    //PAWANTODO: what error to pass by default
-                    continuation.resume(throwing: error ?? NSError());
-                    return
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    self.roomState = .leave(reason: .userLeft)
+                    continuation.resume()
                 }
-                self.roomState = .leave(reason: .userLeft)
-                continuation.resume()
             }
         }
 #endif
@@ -166,14 +167,13 @@ extension HMSRoomModel {
                 
                 guard let self else { return }
                 
-                guard success else {
-                    //PAWANTODO: what error to pass by default
-                    continuation.resume(throwing: error ?? NSError());
-                    return
+                if let error = error {
+                    continuation.resume(throwing: error);
                 }
-                
-                self.roomState = .leave(reason: .roomEnded)
-                continuation.resume()
+                else {
+                    self.roomState = .leave(reason: .roomEnded)
+                    continuation.resume()
+                }
             }
         }
 #endif
@@ -192,13 +192,13 @@ extension HMSRoomModel {
         return try await withCheckedThrowingContinuation { continuation in
             
             sdk.changeTrackState(for: trackModel.track, mute: mute) { success, error in
-                guard success else {
-                    //PAWANTODO: what error to pass by default
-                    continuation.resume(throwing: error ?? NSError());
-                    return
-                }
                 
-                continuation.resume()
+                if let error = error {
+                    continuation.resume(throwing: error);
+                }
+                else {
+                    continuation.resume()
+                }
             }
         }
 #endif
@@ -220,16 +220,17 @@ extension HMSRoomModel {
             let sendCompletion: ((HMSMessage?, Error?) -> Void) = { [weak self] newMessage, error in
                 guard let self else { return }
                 
-                guard let newMessage = newMessage else {
-                    //PAWANTODO: what error to pass by default
-                    continuation.resume(throwing: error ?? NSError());
-                    return
+                if let error = error {
+                    continuation.resume(throwing: error);
                 }
-                
-                if type == "chat" {
-                    self.messages.append(newMessage)
+                else {
+                    if type == "chat" {
+                        if let newMessage = newMessage {
+                            self.messages.append(newMessage)
+                        }
+                    }
+                    continuation.resume()
                 }
-                continuation.resume()
             }
             
             switch recipient {
