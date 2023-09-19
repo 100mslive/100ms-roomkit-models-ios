@@ -57,7 +57,7 @@ public class HMSPeerModel: ObservableObject {
     public let peer: HMSPeer
     @Published public internal(set) var role: HMSRole?
     
-    init(peer: HMSPeer, roomModel: HMSRoomModel) {
+    init(peer: HMSPeer, roomModel: HMSRoomModel?) {
         self.roomModel = roomModel
         self.peer = peer
         self.id = peer.peerID
@@ -73,7 +73,7 @@ public class HMSPeerModel: ObservableObject {
         self.canStartStopRecording = peer.role?.permissions.browserRecording ?? false
         
         if peer.isLocal {
-            roomModel.userCanEndRoom = canEndRoom
+            roomModel?.userCanEndRoom = canEndRoom
         }
         self.canEndRoom = canEndRoom
         
@@ -85,7 +85,7 @@ public class HMSPeerModel: ObservableObject {
             let dataString = String(data: data, encoding: .utf8) else { return }
             
             Task {
-                try await roomModel.setUserMetadata(dataString)
+                try await roomModel?.setUserMetadata(dataString)
             }
         }
         
@@ -94,7 +94,7 @@ public class HMSPeerModel: ObservableObject {
         
         updateMetadata()
         
-        roomModel.objectWillChange.send()
+        roomModel?.objectWillChange.send()
     }
     public var isLocal: Bool {
         peer.isLocal
