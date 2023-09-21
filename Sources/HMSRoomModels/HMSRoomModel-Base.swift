@@ -13,17 +13,6 @@ import HMSSDK
 @MainActor
 extension HMSRoomModel {
     
-    public func peerModels(withRoles roles: [String]) -> [HMSPeerModel] {
-        peerModels.filter{
-            if let role = $0.role {
-                return roles.contains(role.name)
-            }
-            else {
-                return false
-            }
-        }
-    }
-    
     #if !Preview
     public var localAudioTrackModel: HMSTrackModel? {
         

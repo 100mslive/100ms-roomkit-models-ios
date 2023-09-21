@@ -9,6 +9,19 @@
 import SwiftUI
 import HMSSDK
 
+extension [HMSPeerModel] {
+    public func filter(withRoles roles: [String]) -> [HMSPeerModel] {
+        self.filter{
+            if let role = $0.role {
+                return roles.contains(role.name)
+            }
+            else {
+                return false
+            }
+        }
+    }
+}
+
 // Convenience computed properties
 extension HMSPeerModel {
     #if !Preview
