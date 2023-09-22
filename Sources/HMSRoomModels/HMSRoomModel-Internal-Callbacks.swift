@@ -16,6 +16,7 @@ extension HMSRoomModel: HMSUpdateListener {
         roles = sdk.roles
         #endif
         isUserJoined = true
+        roomState = .meeting
         
         if localPeerModel == nil {
             if let localPeer = sdk.localPeer {

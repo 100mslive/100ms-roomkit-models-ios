@@ -48,10 +48,15 @@ extension HMSRoomModel {
         })
     }
     
-    public func preview() async throws {
+    public func preview(userName: String? = nil) async throws {
+        
+        if let userName = userName {
+            self.userName = userName
+        }
+        
         // if providedToken is nil our init constrain makes roomCode non-nil
         let authToken = providedToken != nil ? providedToken! : try await getAuthToken(roomCode: roomCode!)
-        self.sdk.preview(config: HMSConfig(authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil), delegate: self)
+        self.sdk.preview(config: HMSConfig(userName: self.userName, authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil), delegate: self)
         
         return try await withCheckedThrowingContinuation { continuation in
             
@@ -75,11 +80,16 @@ extension HMSRoomModel {
         }
     }
     
-    public func join(userName: String) async throws {
+    public func join(userName: String? = nil) async throws {
+        
+        if let userName = userName {
+            self.userName = userName
+        }
+        
         // if providedToken is nil our init constrain makes roomCode non-nil
         let authToken = providedToken != nil ? providedToken! : try await getAuthToken(roomCode: roomCode!)
         
-        self.sdk.join(config: HMSConfig(userName: userName, authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil), delegate: self)
+        self.sdk.join(config: HMSConfig(userName: self.userName, authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil), delegate: self)
         
         return try await withCheckedThrowingContinuation { continuation in
             
