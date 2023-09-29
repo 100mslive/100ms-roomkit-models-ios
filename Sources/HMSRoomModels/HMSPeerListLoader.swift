@@ -9,7 +9,7 @@ import Foundation
 import HMSSDK
 
 @MainActor
-public final class HMSObservablePeerListIterator: ObservableObject {
+public final class HMSPeerListLoader: ObservableObject {
     @Published public private(set) var peers: [HMSPeerModel]
     @Published public private(set) var hasNext: Bool
     @Published public private(set) var isLoading: Bool
