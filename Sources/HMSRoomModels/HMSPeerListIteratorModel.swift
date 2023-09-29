@@ -9,7 +9,7 @@ import Foundation
 import HMSSDK
 
 @MainActor
-public final class HMSPeerListModel: ObservableObject {
+public final class HMSPeerListIteratorModel: ObservableObject {
     
     @Published public private(set) var peers: [HMSPeerModel]
     @Published public private(set) var hasMorePeers: Bool
