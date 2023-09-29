@@ -12,7 +12,7 @@ import HMSSDK
 public final class HMSPeerListLoader: ObservableObject {
     @Published public private(set) var peers: [HMSPeerModel]
     @Published public private(set) var hasNext: Bool
-    @Published public private(set) var isLoading: Bool
+    @Published public private(set) var isLoadingPeers: Bool
     @Published public private(set) var totalCount: Int
 
     public var options: HMSPeerListIteratorOptions {
@@ -26,7 +26,7 @@ public final class HMSPeerListLoader: ObservableObject {
     init(iterator: HMSPeerListIterator, modelBuilder: @escaping ((HMSPeer) -> HMSPeerModel)) {
         self.peers = []
         self.hasNext = true
-        self.isLoading = false
+        self.isLoadingPeers = false
         self.totalCount = 0
         self.modelBuilder = modelBuilder
         self.iterator = iterator
@@ -42,18 +42,18 @@ public final class HMSPeerListLoader: ObservableObject {
     }
     
     public func loadNext() async throws {
-        isLoading = true
+        isLoadingPeers = true
         return try await withCheckedThrowingContinuation { continuation in
             iterator.next() { [weak self] newPeers, error in
                 guard let self = self else { return }
                 if let error = error {
-                    self.isLoading = false
+                    self.isLoadingPeers = false
                     continuation.resume(throwing: error)
                 } else {
                     self.append(newPeers ?? [])
                     self.hasNext = iterator.hasNext
                     self.totalCount = iterator.totalCount
-                    self.isLoading = false
+                    self.isLoadingPeers = false
                     continuation.resume()
                 }
             }
