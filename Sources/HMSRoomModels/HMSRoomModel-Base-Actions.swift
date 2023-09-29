@@ -464,13 +464,14 @@ extension HMSRoomModel {
 #endif
     }
 
-#if !Preview
     public func getPeerListIterator(for roleName: String, limit: Int = 10) -> HMSPeerListIteratorModel {
         let iterator = HMSPeerListIteratorModel(iterator: sdk.getPeerListIterator(options: HMSPeerListIteratorOptions(filterByRoleName: roleName, limit: limit))) { [weak self] inPeer in
+#if !Preview
             HMSPeerModel(peer: inPeer, roomModel: self)
+#else
+            HMSPeerModel()
+#endif
         }
         return iterator
     }
-#endif
-    
 }
