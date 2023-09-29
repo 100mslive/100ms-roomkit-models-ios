@@ -11,7 +11,7 @@ import HMSSDK
 @MainActor
 public final class HMSPeerListLoader: ObservableObject {
     @Published public private(set) var peers: [HMSPeerModel]
-    @Published public private(set) var hasNext: Bool
+    @Published public private(set) var hasMorePeers: Bool
     @Published public private(set) var isLoadingPeers: Bool
     @Published public private(set) var totalPeerCount: Int
 
@@ -25,7 +25,7 @@ public final class HMSPeerListLoader: ObservableObject {
     
     init(iterator: HMSPeerListIterator, modelBuilder: @escaping ((HMSPeer) -> HMSPeerModel)) {
         self.peers = []
-        self.hasNext = true
+        self.hasMorePeers = true
         self.isLoadingPeers = false
         self.totalPeerCount = 0
         self.modelBuilder = modelBuilder
@@ -51,7 +51,7 @@ public final class HMSPeerListLoader: ObservableObject {
                     continuation.resume(throwing: error)
                 } else {
                     self.append(newPeers ?? [])
-                    self.hasNext = iterator.hasNext
+                    self.hasMorePeers = iterator.hasNext
                     self.totalPeerCount = iterator.totalCount
                     self.isLoadingPeers = false
                     continuation.resume()
