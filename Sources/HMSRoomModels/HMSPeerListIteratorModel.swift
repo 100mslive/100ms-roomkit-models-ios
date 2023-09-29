@@ -9,11 +9,12 @@ import Foundation
 import HMSSDK
 
 @MainActor
-public final class HMSObservablePeerListIterator: ObservableObject {
+public final class HMSPeerListIteratorModel: ObservableObject {
+    
     @Published public private(set) var peers: [HMSPeerModel]
-    @Published public private(set) var hasNext: Bool
-    @Published public private(set) var isLoading: Bool
-    @Published public private(set) var totalCount: Int
+    @Published public private(set) var hasMorePeers: Bool
+    @Published public private(set) var isLoadingPeers: Bool
+    @Published public private(set) var totalPeerCount: Int
 
     public var options: HMSPeerListIteratorOptions {
         iterator.options
@@ -25,9 +26,9 @@ public final class HMSObservablePeerListIterator: ObservableObject {
     
     init(iterator: HMSPeerListIterator, modelBuilder: @escaping ((HMSPeer) -> HMSPeerModel)) {
         self.peers = []
-        self.hasNext = true
-        self.isLoading = false
-        self.totalCount = 0
+        self.hasMorePeers = true
+        self.isLoadingPeers = false
+        self.totalPeerCount = 0
         self.modelBuilder = modelBuilder
         self.iterator = iterator
     }
@@ -41,19 +42,19 @@ public final class HMSObservablePeerListIterator: ObservableObject {
         currentIDs.formUnion(newIDs)
     }
     
-    public func loadNext() async throws {
-        isLoading = true
+    public func loadNextSetOfPeers() async throws {
+        isLoadingPeers = true
         return try await withCheckedThrowingContinuation { continuation in
             iterator.next() { [weak self] newPeers, error in
                 guard let self = self else { return }
                 if let error = error {
-                    self.isLoading = false
+                    self.isLoadingPeers = false
                     continuation.resume(throwing: error)
                 } else {
                     self.append(newPeers ?? [])
-                    self.hasNext = iterator.hasNext
-                    self.totalCount = iterator.totalCount
-                    self.isLoading = false
+                    self.hasMorePeers = iterator.hasNext
+                    self.totalPeerCount = iterator.totalCount
+                    self.isLoadingPeers = false
                     continuation.resume()
                 }
             }
