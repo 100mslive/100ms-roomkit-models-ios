@@ -9,7 +9,8 @@ import Foundation
 import HMSSDK
 
 @MainActor
-public final class HMSPeerListLoader: ObservableObject {
+public final class HMSPeerListModel: ObservableObject {
+    
     @Published public private(set) var peers: [HMSPeerModel]
     @Published public private(set) var hasMorePeers: Bool
     @Published public private(set) var isLoadingPeers: Bool
@@ -41,7 +42,7 @@ public final class HMSPeerListLoader: ObservableObject {
         currentIDs.formUnion(newIDs)
     }
     
-    public func loadNext() async throws {
+    public func loadNextSetOfPeers() async throws {
         isLoadingPeers = true
         return try await withCheckedThrowingContinuation { continuation in
             iterator.next() { [weak self] newPeers, error in
