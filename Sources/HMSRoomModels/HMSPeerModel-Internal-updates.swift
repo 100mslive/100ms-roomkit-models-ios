@@ -56,6 +56,14 @@ extension HMSPeerModel {
         #endif
     }
     
+    func updateHandRaise() {
+        #if !Preview
+        isHandRaised = peer.isHandRaised
+        
+        roomModel?.objectWillChange.send()
+        #endif
+    }
+    
     func updateDownlinkQuality() {
 #if !Preview
         downlinkQuality = peer.networkQuality?.downlinkQuality

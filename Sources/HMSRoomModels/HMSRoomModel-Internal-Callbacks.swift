@@ -9,7 +9,6 @@ import Combine
 import HMSSDK
 
 extension HMSRoomModel: HMSUpdateListener {
-    
     @MainActor public func on(join room: HMSRoom) {
         assign(room: room)
 #if !Preview
@@ -51,12 +50,13 @@ extension HMSRoomModel: HMSUpdateListener {
         }
     }
     
+    @MainActor public func onPeerListUpdate(added: [HMSPeer], removed: [HMSPeer]) {
+        added.forEach { if !$0.isLocal { insert(peer: $0) } }
+        removed.forEach { remove(peer: $0) }
+    }
+    
     @MainActor public func on(peer: HMSPeer, update: HMSPeerUpdate) {
         switch update {
-        case .peerJoined:
-            insert(peer: peer)
-        case .peerLeft:
-            remove(peer: peer)
         case .roleUpdated:
             updateRole(for: peer)
         case .nameUpdated:
@@ -65,7 +65,9 @@ extension HMSRoomModel: HMSUpdateListener {
             updateMetadata(for: peer)
         case .networkQualityUpdated:
             updateNetworkQuality(for: peer)
-        case .defaultUpdate: break
+        case .handRaiseUpdated:
+            updateHandRaise(for: peer)
+        case .defaultUpdate, .peerJoined, .peerLeft: break
         @unknown default: break
         }
     }

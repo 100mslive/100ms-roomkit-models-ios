@@ -47,6 +47,8 @@ public class HMSPeerModel: ObservableObject {
     @Published public internal(set) var lastSpokenTimestamp: Date = .distantPast
     @Published public internal(set) var isSpeaking: Bool = false
     
+    @Published public internal(set) var isHandRaised: Bool = false
+    
     // in-memory data
     @Published public var inMemoryStore = [String: Any?]()
     public var inMemoryStaticStore = [String: Any?]()
@@ -55,7 +57,7 @@ public class HMSPeerModel: ObservableObject {
     public let peer: HMSPeer
     @Published public internal(set) var role: HMSRole?
     
-    init(peer: HMSPeer, roomModel: HMSRoomModel) {
+    init(peer: HMSPeer, roomModel: HMSRoomModel?) {
         self.roomModel = roomModel
         self.peer = peer
         self.id = peer.peerID
@@ -71,7 +73,7 @@ public class HMSPeerModel: ObservableObject {
         self.canStartStopRecording = peer.role?.permissions.browserRecording ?? false
         
         if peer.isLocal {
-            roomModel.userCanEndRoom = canEndRoom
+            roomModel?.userCanEndRoom = canEndRoom
         }
         self.canEndRoom = canEndRoom
         
@@ -83,15 +85,16 @@ public class HMSPeerModel: ObservableObject {
             let dataString = String(data: data, encoding: .utf8) else { return }
             
             Task {
-                try await roomModel.setUserMetadata(dataString)
+                try await roomModel?.setUserMetadata(dataString)
             }
         }
         
         self.isVideoDegraded = (peer.videoTrack?.isDegraded()) ?? false
+        self.isHandRaised = peer.isHandRaised
         
         updateMetadata()
         
-        roomModel.objectWillChange.send()
+        roomModel?.objectWillChange.send()
     }
     public var isLocal: Bool {
         peer.isLocal

@@ -420,4 +420,57 @@ extension HMSRoomModel {
         roleChangeRequests.removeFirst()
 #endif
     }
+    
+    public func raiseHand() async throws {
+#if !Preview
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.raiseLocalPeerHand() { _, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+#endif
+    }
+    
+    
+    public func lowerHand() async throws {
+#if !Preview
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.lowerLocalPeerHand() { _, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+#endif
+    }
+    
+    public func lowerRemotePeerHand(for peer: HMSPeerModel) async throws {
+#if !Preview
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.lowerRemotePeerHand(peer.peer) { _, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+#endif
+    }
+
+#if !Preview
+    public func getIterator(for roleName: String, limit: Int = 10) -> HMSObservablePeerListIterator {
+        let iterator = HMSObservablePeerListIterator(iterator: sdk.getPeerListIterator(options: HMSPeerListIteratorOptions(filterByRoleName: roleName, limit: limit))) { [weak self] inPeer in
+            HMSPeerModel(peer: inPeer, roomModel: self)
+        }
+        return iterator
+    }
+#endif
+    
 }

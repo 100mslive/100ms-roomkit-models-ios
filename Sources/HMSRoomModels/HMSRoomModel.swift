@@ -78,7 +78,11 @@ public class HMSRoomModel: ObservableObject {
     @Published public var sessionStartedAt: Date?
     @Published public var recordingState: HMSRoomRecordingState = .stopped
     @Published public var speakers = [HMSPeerModel]()
-    
+
+    public var isLarge: Bool {
+        room?.isLarge ?? false
+    }
+
     // Room state
     @Published public var roomState: HMSRoomState = .none {
         

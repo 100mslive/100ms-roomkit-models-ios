@@ -169,6 +169,13 @@ extension HMSRoomModel {
         #endif
     }
     
+    func updateHandRaise(for peer: HMSPeer) {
+#if !Preview
+        guard let peerModel = (peerModels.first{$0.peer == peer}) else { return }
+        peerModel.updateHandRaise()
+        #endif
+    }
+    
     func updateMetadata(for peer: HMSPeer) {
 #if !Preview
         guard let peerModel = (peerModels.first{$0.peer == peer}) else { return }
