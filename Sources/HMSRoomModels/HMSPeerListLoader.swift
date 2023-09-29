@@ -13,7 +13,7 @@ public final class HMSPeerListLoader: ObservableObject {
     @Published public private(set) var peers: [HMSPeerModel]
     @Published public private(set) var hasNext: Bool
     @Published public private(set) var isLoadingPeers: Bool
-    @Published public private(set) var totalCount: Int
+    @Published public private(set) var totalPeerCount: Int
 
     public var options: HMSPeerListIteratorOptions {
         iterator.options
@@ -27,7 +27,7 @@ public final class HMSPeerListLoader: ObservableObject {
         self.peers = []
         self.hasNext = true
         self.isLoadingPeers = false
-        self.totalCount = 0
+        self.totalPeerCount = 0
         self.modelBuilder = modelBuilder
         self.iterator = iterator
     }
@@ -52,7 +52,7 @@ public final class HMSPeerListLoader: ObservableObject {
                 } else {
                     self.append(newPeers ?? [])
                     self.hasNext = iterator.hasNext
-                    self.totalCount = iterator.totalCount
+                    self.totalPeerCount = iterator.totalCount
                     self.isLoadingPeers = false
                     continuation.resume()
                 }
