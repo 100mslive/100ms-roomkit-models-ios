@@ -113,3 +113,43 @@ Example: Send a text message to everyone.
 ```swift
 try await roomModel.send("How is it going?", recipient: .everyone)
 ```
+
+
+### Start/Stop streaming the Room
+
+```swift
+try await roomModel.startStreaming()
+```
+```swift
+try await roomModel.stopStreaming()
+```
+
+
+### Start/Stop recording the Room
+
+```swift
+try await roomModel.startRecording()
+```
+
+```swift
+try await roomModel.stopRecording()
+```
+
+### Change local participant's name
+
+```swift
+try await roomModel.changeUserName(/* new name as string */)
+```
+
+### Change role of a participant
+
+```swift
+try await roomModel.changeRole(of: /* instance of HMSPeerModel */, to: /* role's name as string */, force: /* optional boolean to denote if role should change immediately or after the participant's approval */)
+```
+
+Example: Send a text message to everyone.
+
+```swift
+guard let student = roomModel.remotePeerModels.filter(withRoles: ["student"]).first else {return}
+try await roomModel.changeRole(of: student, to: "Stage")
+```
