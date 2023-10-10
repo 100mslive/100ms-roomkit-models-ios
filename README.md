@@ -28,12 +28,12 @@ import HMSRoomModels
 You can create a reactive model of the room with either a [room-code](https://www.100ms.live/docs/get-started/v2/get-started/prebuilt/room-codes/overview) or an [auth-token](https://www.100ms.live/docs/get-started/v2/get-started/security-and-tokens#auth-token-for-client-sdks) like below:
 
 ```swift
-// Initialize with [room-code](https://www.100ms.live/docs/get-started/v2/get-started/prebuilt/room-codes/overview)
+// Initialize with room-code
 let roomModel = HMSRoomModel(roomCode: /*pass room code as string here*/)
 ```
 
 ```swift
-// Initialize with [auth-token](https://www.100ms.live/docs/get-started/v2/get-started/security-and-tokens#auth-token-for-client-sdks)
+// Initialize with auth-token
 let roomModel = HMSRoomModel(token: /*pass role's auth token as string here*/)
 ```
 
@@ -48,6 +48,8 @@ let roomModel.preview(userName: /*pass participant's name as string here*/)
 ```
 
 ## Join the Room
+
+To join and interact with others in audio or video call, the user needs to join a room.
 
 You call join method on Room Model instance to join the room. You can optionally pass the name of the participant in the join method.
 
