@@ -153,3 +153,17 @@ Example: Send a text message to everyone.
 guard let student = roomModel.remotePeerModels.filter(withRoles: ["student"]).first else {return}
 try await roomModel.changeRole(of: student, to: "Stage")
 ```
+
+### Raise/Lower hand of a participant
+
+```swift
+
+// Raise hand of local participant
+try await roomModel.raiseHand()
+
+// Lower hand of local participant
+try await roomModel.lowerHand()
+
+// Lower hand of a participant
+try await roomModel.lowerHand(of: /* instance of HMSPeerModel */)
+```
