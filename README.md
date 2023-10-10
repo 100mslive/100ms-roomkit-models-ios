@@ -74,7 +74,7 @@ roomModel.toggleCamera()
 ### Leave session
 
 ```swift
-try await roomModel.leave()
+try await roomModel.leaveSession()
 ```
 
 ### End Session for all
@@ -105,13 +105,13 @@ roomModel.remove(peer: peerModel)
 ### Send chat message to a participant
 
 ```swift
-try await roomModel.send(message: /* text message as string */, type: /* optional type of message; type is "chat" by default*/, recipient: /* instance of HMSRecipient */)
+try await roomModel.send(message: /* text message as string */, to recipient: /* instance of HMSRecipient */, type: /* optional type of message; type is "chat" by default*/)
 ```
 
 Example: Send a text message to everyone.
 
 ```swift
-try await roomModel.send("How is it going?", recipient: .everyone)
+try await roomModel.send("How is it going?", to: .everyone)
 ```
 
 
