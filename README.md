@@ -44,7 +44,7 @@ Preview screen is a frequently used UX element which allows users to check if th
 You call preview method on the Room model instance to preview the room. You can optionally pass the name of the participant in the preview method.
 
 ```swift
-let roomModel.preview(userName: /*pass participant's name as string here*/)
+roomModel.preview(userName: /*pass participant's name as string here*/)
 ```
 
 ## Join the Room
@@ -54,5 +54,62 @@ To join and interact with others in audio or video call, the user needs to join 
 You call join method on Room Model instance to join the room. You can optionally pass the name of the participant in the join method.
 
 ```swift
-let roomModel.join(userName: /*pass participant's name as string here*/)
+roomModel.join(userName: /*pass participant's name as string here*/)
+```
+
+## How to perform local user actions
+
+### Toggle Mic
+
+```swift
+roomModel.toggleMic()
+```
+
+### Toggle Camera
+
+```swift
+roomModel.toggleCamera()
+```
+
+### Leave session
+
+```swift
+try await roomModel.leave()
+```
+
+### End Session for all
+
+```swift
+try await roomModel.endSession()
+```
+
+### Switch Camera (Front/Back)
+
+```swift
+try await roomModel.switchCamera()
+```
+
+### Remove a peer from meeting
+
+```swift
+roomModel.remove(peer: /* HMSPeerModel instance */)
+```
+
+Example: Remove a remote particiapnt from the call.
+
+```swift
+guard let peerModel = roomModel.remotePeerModels.first else {return}
+roomModel.remove(peer: peerModel)
+```
+
+### Send chat message to a participant
+
+```swift
+try await roomModel.send(message: /* text message as string */, type: /* optional type of message; type is "chat" by default*/, recipient: /* instance of HMSRecipient */)
+```
+
+Example: Send a text message to everyone.
+
+```swift
+try await roomModel.send("How is it going?", recipient: .everyone)
 ```
