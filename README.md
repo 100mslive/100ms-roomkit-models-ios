@@ -25,6 +25,8 @@ import HMSRoomModels
 
 ### Create a Room Model
 
+You can create a reactive model of the room with either a [room-code](https://www.100ms.live/docs/get-started/v2/get-started/prebuilt/room-codes/overview) or an [auth-token](https://www.100ms.live/docs/get-started/v2/get-started/security-and-tokens#auth-token-for-client-sdks) like below:
+
 ```swift
 // Initialize with [room-code](https://www.100ms.live/docs/get-started/v2/get-started/prebuilt/room-codes/overview)
 let roomModel = HMSRoomModel(roomCode: /*pass room code as string here*/)
@@ -35,4 +37,20 @@ let roomModel = HMSRoomModel(roomCode: /*pass room code as string here*/)
 let roomModel = HMSRoomModel(token: /*pass role's auth token as string here*/)
 ```
 
-## Example usage
+## Preview the Room
+
+Preview screen is a frequently used UX element which allows users to check if their input devices are working properly and set the initial state (mute/unmute) of their audio and video tracks before joining.
+
+You call preview method on the Room model instance to preview the room. You can optionally pass the name of the participant in the preview method.
+
+```swift
+let roomModel.preview(userName: /*pass participant's name as string here*/)
+```
+
+## Join the Room
+
+You call join method on Room Model instance to join the room. You can optionally pass the name of the participant in the join method.
+
+```swift
+let roomModel.join(userName: /*pass participant's name as string here*/)
+```
