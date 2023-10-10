@@ -95,11 +95,11 @@ try await roomModel.switchCamera()
 roomModel.remove(peer: /* HMSPeerModel instance */)
 ```
 
-Example: Remove a remote particiapnt from the call.
+Example: Remove a random remote particiapnt from the call.
 
 ```swift
-guard let peerModel = roomModel.remotePeerModels.first else {return}
-roomModel.remove(peer: peerModel)
+guard let randomRemoteParticiapnt = roomModel.remotePeerModels.randomElement() else {return}
+roomModel.remove(peer: randomRemoteParticiapnt)
 ```
 
 ### Send chat message to a participant
