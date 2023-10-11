@@ -149,7 +149,7 @@ extension HMSRoomModel {
     }
     
     // Leave call
-    public func leave() async throws {
+    public func leaveSession() async throws {
 #if !Preview
         return try await withCheckedThrowingContinuation { continuation in
             
@@ -190,9 +190,18 @@ extension HMSRoomModel {
     }
     
     // Switch camera
-    public func switchCamera() {
+    public func switchCamera() async throws {
 #if !Preview
-        (localVideoTrackModel?.track as? HMSLocalVideoTrack)?.switchCamera()
+        return try await withCheckedThrowingContinuation { continuation in
+            (localVideoTrackModel?.track as? HMSLocalVideoTrack)?.switchCamera({ error in
+                if let error = error {
+                    continuation.resume(throwing: error);
+                }
+                else {
+                    continuation.resume()
+                }
+            }) ?? continuation.resume()
+        }
 #endif
     }
     
@@ -222,7 +231,7 @@ extension HMSRoomModel {
     }
     
     // Send message
-    public func send(message: String, type: String = "chat", recipient: HMSRecipient) async throws {
+    public func send(message: String, to recipient: HMSRecipient, type: String = "chat") async throws {
         
 #if !Preview
         return try await withCheckedThrowingContinuation { continuation in
@@ -450,14 +459,19 @@ extension HMSRoomModel {
 #endif
     }
     
-    public func lowerRemotePeerHand(for peer: HMSPeerModel) async throws {
+    public func lowerHand(of peer: HMSPeerModel) async throws {
 #if !Preview
-        return try await withCheckedThrowingContinuation { continuation in
-            sdk.lowerRemotePeerHand(peer.peer) { _, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume()
+        if peer.isLocal {
+            try await lowerHand()
+        }
+        else {
+            return try await withCheckedThrowingContinuation { continuation in
+                sdk.lowerRemotePeerHand(peer.peer) { _, error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume()
+                    }
                 }
             }
         }
