@@ -200,7 +200,7 @@ extension HMSRoomModel {
                 else {
                     continuation.resume()
                 }
-            })
+            }) ?? continuation.resume()
         }
 #endif
     }
