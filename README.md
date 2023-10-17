@@ -53,6 +53,7 @@ struct MeetingView: View {
         Group {
             switch roomModel.roomState {
             case .none, .leave:
+                // Button to join the room
                 Button(action: {
                     Task {
                         try await roomModel.joinSession(userName: "iOS User")
@@ -62,6 +63,7 @@ struct MeetingView: View {
                 })
             case .meeting:
                 VStack {
+                    // Button to leave the room
                     Button(action: {
                         Task {
                             try await roomModel.leaveSession()
@@ -92,15 +94,11 @@ struct MeetingView: View {
         Group {
             switch roomModel.roomState {
             case .none, .leave:
-                Button(action: {
-                    Task {
-                        try await roomModel.joinSession(userName: "iOS User")
-                    }
-                }, label: {
-                    Text("Join")
-                })
+                // Button to join the room
+                ...
             case .meeting:
                 VStack {
+                    // Render video of each peer in the call
                     List {
                         ForEach(roomModel.peerModels) { peerModel in
                             
@@ -111,7 +109,8 @@ struct MeetingView: View {
                             }
                         }
                     }
-                    
+
+                    // Button to leave the room
                     Button(action: {
                         Task {
                             try await roomModel.leaveSession()
@@ -142,22 +141,28 @@ struct MeetingView: View {
         Group {
             switch roomModel.roomState {
             case .none, .leave:
+                // Button to join the room
                 ...
             case .meeting:
                 VStack {
+                    // Render video of each peer in the call
                     ...
                     
                     HStack {
+
+                        // Toggle local user's mic
                         Image(systemName: roomModel.isMicMute ? "mic.slash" : "mic")
                             .onTapGesture {
                                 roomModel.toggleMic()
                             }
-                        
+
+                        // Toggle local user's camera
                         Image(systemName: roomModel.isCameraMute ? "video.slash" : "video")
                             .onTapGesture {
                                 roomModel.toggleCamera()
                             }
-                        
+
+                        // Button to leave the room
                         Image(systemName: "phone.down.fill")
                             .onTapGesture {
                                 Task {
