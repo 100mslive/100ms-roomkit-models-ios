@@ -37,11 +37,50 @@ let roomModel = HMSRoomModel(roomCode: /*pass room code as string here*/)
 let roomModel = HMSRoomModel(token: /*pass role's auth token as string here*/)
 ```
 
-# Join/Leave a Room
+# How to Join/Leave a Room
 
 You call joinSession and leaveSession on RoomModel instance to join and leave the room.
 
 Example: Simple Meeting View with join and leave.
+
+```swift
+struct MeetingView: View {
+    
+    @ObservedObject var roomModel = HMSRoomModel(roomCode: "qdr-mik-seb")
+    
+    var body: some View {
+        
+        Group {
+            switch roomModel.roomState {
+            case .none, .leave:
+                Button(action: {
+                    Task {
+                        try await roomModel.joinSession(userName: "iOS User")
+                    }
+                }, label: {
+                    Text("Join")
+                })
+            case .meeting:
+                VStack {
+                    Button(action: {
+                        Task {
+                            try await roomModel.leaveSession()
+                        }
+                    }, label: {
+                        Text("Leave")
+                    })
+                }
+            }
+        }
+    }
+}
+```
+
+# How to display live streaming video
+
+You can use HMSVideoTrackView and pass a peer model to render it's video track.
+
+Example: Simple Meeting View to render each peer's video in a list view.
 
 ```swift
 struct MeetingView: View {
@@ -80,6 +119,52 @@ struct MeetingView: View {
                     }, label: {
                         Text("Leave")
                     })
+                }
+            }
+        }
+    }
+}
+```
+
+# How to Mute/Unmute Audio and Video
+
+You can call **toggleMic** or **toggleCamera** method on RoomModel instance to toggle audio and video. You can also check whether the mic and camera is on by checking **isMicMute** and **isCameraMute** property on RoomModel instance.
+
+Example: Simple Meeting View to show mic and camera toggle controls.
+
+```swift
+struct MeetingView: View {
+    
+    @ObservedObject var roomModel = HMSRoomModel(roomCode: "qdr-mik-seb")
+    
+    var body: some View {
+        
+        Group {
+            switch roomModel.roomState {
+            case .none, .leave:
+                ...
+            case .meeting:
+                VStack {
+                    ...
+                    
+                    HStack {
+                        Image(systemName: roomModel.isMicMute ? "mic.slash" : "mic")
+                            .onTapGesture {
+                                roomModel.toggleMic()
+                            }
+                        
+                        Image(systemName: roomModel.isCameraMute ? "video.slash" : "video")
+                            .onTapGesture {
+                                roomModel.toggleCamera()
+                            }
+                        
+                        Image(systemName: "phone.down.fill")
+                            .onTapGesture {
+                                Task {
+                                    try await roomModel.leaveSession()
+                                }
+                            }
+                    }
                 }
             }
         }
