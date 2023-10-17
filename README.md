@@ -179,19 +179,21 @@ struct MeetingView: View {
 
 # How to send message to another participant
 
-You use send(message: , to:) method on RoomModel instance to send a message to another participant.
+You use **send(message: , to:)** method on RoomModel instance to send a message to another participant.
 
 ```swift
 try await roomModel.send(message: /* text message as string */, to recipient: /* instance of HMSRecipient */, type: /* optional type of message; type is "chat" by default*/)
 ```
 
-Example: Send a text message to everyone.
+Example: Send a text message **to everyone**.
 
 ```swift
 try await roomModel.send("How is it going?", to: .everyone)
+```
 
-Example: Send a text message to a random remote participant.
+Example: Send a text message **to a random remote participant**.
 
+```swift
 guard let randomRemoteParticiapnt = roomModel.remotePeerModels.randomElement() else {return}
 try await roomModel.send(message: "How is it going?", to: .peer(randomRemoteParticiapnt))
 ```
