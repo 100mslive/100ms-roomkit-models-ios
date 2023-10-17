@@ -187,6 +187,13 @@ guard let randomRemoteParticiapnt = roomModel.remotePeerModels.randomElement() e
 try await roomModel.send(message: "How is it going?", to: .peer(randomRemoteParticiapnt))
 ```
 
+Example: Send a text message **to a all participant with student role**.
+
+```swift
+guard let studentRole = (roomModel.roles.first{$0.name == "student"}) else { return }
+try await roomModel.send(message: "How is it going?", to: .role(studentRole))
+```
+
 # How to Perform Actions
 
 You can also perform actions on RoomModel, PeerModels and TrackModels.
