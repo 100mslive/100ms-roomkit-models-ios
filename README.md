@@ -37,6 +37,56 @@ let roomModel = HMSRoomModel(roomCode: /*pass room code as string here*/)
 let roomModel = HMSRoomModel(token: /*pass role's auth token as string here*/)
 ```
 
+# Join/Leave a Room
+
+You call joinSession and leaveSession on RoomModel instance to join and leave the room.
+
+Example: Simple Meeting View with join and leave.
+
+```swift
+struct MeetingView: View {
+    
+    @ObservedObject var roomModel = HMSRoomModel(roomCode: "qdr-mik-seb")
+    
+    var body: some View {
+        
+        Group {
+            switch roomModel.roomState {
+            case .none, .leave:
+                Button(action: {
+                    Task {
+                        try await roomModel.joinSession(userName: "iOS User")
+                    }
+                }, label: {
+                    Text("Join")
+                })
+            case .meeting:
+                VStack {
+                    List {
+                        ForEach(roomModel.peerModels) { peerModel in
+                            
+                            VStack {
+                                Text(peerModel.name)
+                                HMSVideoTrackView(peer: peerModel)
+                                    .frame(height: 200)
+                            }
+                        }
+                    }
+                    
+                    Button(action: {
+                        Task {
+                            try await roomModel.leaveSession()
+                        }
+                    }, label: {
+                        Text("Leave")
+                    })
+                }
+            }
+        }
+    }
+}
+```
+
 # How to Perform Actions
 
 You can also perform actions on RoomModel, PeerModels and TrackModels.
