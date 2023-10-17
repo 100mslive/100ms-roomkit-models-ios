@@ -256,6 +256,8 @@ Where "group.live.100ms.videoapp.roomkit" is the app group ID of your app group 
 @ObservedObject var roomModel = HMSRoomModel(roomCode: "qdw-mil-sev", options: .init(appGroupName: "group.live.100ms.videoapp.roomkit", screenShareBroadcastExtensionBundleId: "live.100ms.videoapp.roomkit.Screenshare"))
 ```
 
+Where "live.100ms.videoapp.roomkit.Screenshare" is the bundle id of your **Broadcast Upload Extension** target.
+
 6. At this point you are ready to share screen of local iOS user. You can use the following code to make a button to start screen sharing from inside your app UI:
 
 ```swift
