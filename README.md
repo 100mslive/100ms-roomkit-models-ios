@@ -194,6 +194,24 @@ guard let studentRole = (roomModel.roles.first{$0.name == "student"}) else { ret
 try await roomModel.send(message: "How is it going?", to: .role(studentRole))
 ```
 
+# How to receive messages from other participants
+
+You can access received messages from **messages** property of RoomModel like following:
+
+```swift
+roomModel.messages
+```
+
+Example: show list of all received messages.
+
+```swift
+List {
+    ForEach(roomModel.messages, id: \.self) { message in
+        Text("message")
+    }
+}
+```
+
 # How to show/render a Participant's Screen
 
 You use **HMSScreenTrackView** and pass a peer model to show/render its screen track. You can check which participants are sharing their screens using **peersSharingScreen** property of RoomModel instance.
