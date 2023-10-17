@@ -194,7 +194,7 @@ guard let studentRole = (roomModel.roles.first{$0.name == "student"}) else { ret
 try await roomModel.send(message: "How is it going?", to: .role(studentRole))
 ```
 
-# How to show a Participant's Screen
+# How to show/render a Participant's Screen
 
 You use **HMSScreenTrackView** and pass a peer model to show/render its screen track. You can check which participants are sharing their screens using **peersSharingScreen** property of RoomModel instance.
 
@@ -228,7 +228,7 @@ You use **HMSScreenTrackView** and pass a peer model to show/render its screen t
 ...
 ```
 
-# How to share screen of local user
+# How to share iOS screen of local user
 
 You need to follow following steps to be able to share screen from iOS app:
 
