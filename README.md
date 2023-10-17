@@ -111,13 +111,7 @@ struct MeetingView: View {
                     }
 
                     // Button to leave the room
-                    Button(action: {
-                        Task {
-                            try await roomModel.leaveSession()
-                        }
-                    }, label: {
-                        Text("Leave")
-                    })
+                    ...
                 }
             }
         }
@@ -163,12 +157,7 @@ struct MeetingView: View {
                             }
 
                         // Button to leave the room
-                        Image(systemName: "phone.down.fill")
-                            .onTapGesture {
-                                Task {
-                                    try await roomModel.leaveSession()
-                                }
-                            }
+                        ...
                     }
                 }
             }
