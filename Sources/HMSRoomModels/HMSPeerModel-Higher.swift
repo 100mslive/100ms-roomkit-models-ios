@@ -15,7 +15,7 @@ extension HMSPeerModel {
     public var regularVideoTrackModel: HMSTrackModel? {
         regularVideoTrackModels.first
     }
-    public var ScreenVideoTrackModel: HMSTrackModel? {
+    public var screenVideoTrackModel: HMSTrackModel? {
         screenTrackModels.first
     }
 }

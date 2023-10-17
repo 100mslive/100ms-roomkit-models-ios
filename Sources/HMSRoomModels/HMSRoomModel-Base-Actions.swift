@@ -9,6 +9,7 @@
 import Foundation
 import HMSSDK
 
+@MainActor
 // Auth, room layout, preview, join
 extension HMSRoomModel {
     public func getAuthToken(roomCode: String) async throws -> String {
@@ -80,7 +81,7 @@ extension HMSRoomModel {
         }
     }
     
-    public func join(userName: String? = nil) async throws {
+    public func joinSession(userName: String? = nil) async throws {
         
         if let userName = userName {
             self.userName = userName
