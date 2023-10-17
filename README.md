@@ -228,6 +228,38 @@ You use **HMSScreenTrackView** and pass a peer model to show/render its screen t
 ...
 ```
 
+# How to share screen of local user
+
+You need to follow following steps to be able to share screen from iOS app:
+
+1. Make a new **Broadcast Upload Extension** target from Xcode. This target will be embedded into your application. Xcode automatically sets everything up if you use Xcode template named **Broadcast Upload Extension** to create the target.
+2. Add **App Group** capability in your **main app** target as well as in this new **Broadcast Upload Extension** target. Use the same App Group ID in both the targets. Let's assume your app group id is "group.live.100ms.videoapp.roomkit".
+3. Add **HMSBroadcastExtensionSDK** to your **main app** target from Swift Package Manager. You can use Swift Package Manager (use https://github.com/100mslive/100ms-ios-broadcast-sdk.git as the package source) to add this SDK to your app. Then add **HMSBroadcastExtensionSDK** to your iOS **Broadcast Upload Extension** target using plus button in target's framework and libraries section.
+4. Xcode creates a **SampleHandler.swift** file in a new folder for your **Broadcast Upload Extension** target. Modify this **SampleHandler.swift** file to contain the following code (delete all the code in **SampleHandler.swift** file and paste the following code):
+
+```swift
+import HMSBroadcastExtensionSDK
+
+class SampleHandler: HMSBroadcastSampleHandler {
+    
+    override var appGroupId: String {
+        "group.live.100ms.videoapp.roomkit"
+    }
+}
+```
+
+5. Where "group.live.100ms.videoapp.roomkit" is the app group ID of your app group that created in step 2. Make sure to replace it with your App Group ID string.
+
+With the above steps completed, let your RoomModel instance know about your App Group ID and your extension's bundle identifier like below:
+
+```swift
+@ObservedObject var roomModel = HMSRoomModel(roomCode: "qdw-mil-sev", options: .init(appGroupName: "group.live.100ms.videoapp.roomkit", screenShareBroadcastExtensionBundleId: "live.100ms.videoapp.roomkit.Screenshare"))
+```
+
+6. At this point you are ready to share screen of local iOS user. You can use the following code to make a button to start screen sharing from inside your app UI:
+
+
+
 # How to Perform Actions
 
 You can also perform actions on RoomModel, PeerModels and TrackModels.
