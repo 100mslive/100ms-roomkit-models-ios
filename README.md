@@ -250,37 +250,22 @@ class SampleHandler: HMSBroadcastSampleHandler {
 
 Where "group.live.100ms.videoapp.roomkit" is the app group ID of your app group that created in step 2. Make sure to replace it with your App Group ID string.
 
-5. With the above steps completed, let your RoomModel instance know about your App Group ID and your extension's bundle identifier like below:
+5. With the above steps completed, let your RoomModel instance know about your App Group ID like below:
 
 ```swift
-@ObservedObject var roomModel = HMSRoomModel(roomCode: "qdw-mil-sev", options: .init(appGroupName: "group.live.100ms.videoapp.roomkit", screenShareBroadcastExtensionBundleId: "live.100ms.videoapp.roomkit.Screenshare"))
+@ObservedObject var roomModel = HMSRoomModel(roomCode: "qdw-mil-sev", options: .init(appGroupName: "group.live.100ms.videoapp.roomkit"))
 ```
-
-Where "live.100ms.videoapp.roomkit.Screenshare" is the bundle id of your **Broadcast Upload Extension** target.
 
 6. At this point you are ready to share screen of local iOS user. You can use the following code to make a button to start screen sharing from inside your app UI:
 
 ```swift
-if roomModel.userCanShareScreen {
-    HMSShareScreenButton {
-        Image(systemName: "rectangle.inset.filled.and.person.filled")
-    }
-    .environmentObject(roomModel)
-}
-```
-
-Note that definition of HMSShareScreenButton is following that you can use in your app:
-
-```swift
 import SwiftUI
-import ReplayKit
-import Combine
 import HMSRoomModels
+import ReplayKit
 
-extension RPSystemBroadcastPickerView: ObservableObject {}
-public struct HMSShareScreenButton<Content>: View where Content : View {
+struct RoomModelStandaloneExample: View {
     
-    @EnvironmentObject var room: HMSRoomModel
+    @ObservedObject var roomModel = HMSRoomModel(roomCode: "qdw-mil-sev", options: .init(appGroupName: "group.live.100ms.videoapp.roomkit"))
     
     @StateObject var broadcastPickerView = {
         let picker = RPSystemBroadcastPickerView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
@@ -288,30 +273,56 @@ public struct HMSShareScreenButton<Content>: View where Content : View {
         return picker
     }()
     
-    let onTap:(()->Void)?
-    @ViewBuilder let content: () -> Content
-    public init(onTap:(()->Void)? = nil, @ViewBuilder content: @escaping () -> Content) {
-        self.content = content
-        self.onTap = onTap
-    }
-    
-    public var body: some View {
-        content()
-        .background(Color.black.opacity(0.0001))
-        .onTapGesture {
-            for subview in broadcastPickerView.subviews {
-                if let button = subview as? UIButton {
-                    button.sendActions(for: UIControl.Event.allTouchEvents)
+    var body: some View {
+        
+        switch roomModel.roomState {
+        case .none, .leave:
+            // Button to join the room
+            ...
+        case .meeting:
+            VStack {
+                List {
+                    
+                    // If a participant is sharing their screen, show their screen at the top of the list
+                    ...
+                        
+                    // Render video of each peer in the call
+                    ...
+                }
+                
+                HStack {
+                    
+                    // Toggle local user's mic
+                    ...
+                    
+                    // Toggle local user's camera
+                    ...
+
+                    // Share local user's screen from iOS
+                    if roomModel.userCanShareScreen {
+                        Image(systemName: "rectangle.inset.filled.and.person.filled")
+                            .onTapGesture {
+                                for subview in broadcastPickerView.subviews {
+                                    if let button = subview as? UIButton {
+                                        button.sendActions(for: UIControl.Event.allTouchEvents)
+                                    }
+                                }
+                            }
+                            .onAppear() {
+                                broadcastPickerView.preferredExtension = "live.100ms.videoapp.roomkit.Screenshare"
+                            }
+                    }
+                    
+                    // Button to leave the room
+                    ...
                 }
             }
-            onTap?()
-        }
-        .onAppear() {
-            broadcastPickerView.preferredExtension = room.options?.screenShareBroadcastExtensionBundleId
         }
     }
 }
 ```
+
+Where "live.100ms.videoapp.roomkit.Screenshare" is the bundle id of your **Broadcast Upload Extension** target.
 
 # How to Perform Actions
 
