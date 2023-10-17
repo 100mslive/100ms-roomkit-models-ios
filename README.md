@@ -80,7 +80,7 @@ struct MeetingView: View {
 
 # How to display live streaming video
 
-You can use **HMSVideoTrackView** and pass a **peer model** instance to render it's video track.
+You can use **HMSVideoTrackView** and pass a **peer model** instance to show/render its video track.
 
 Example: Simple Meeting View to render each peer's video in a list view.
 
@@ -192,6 +192,40 @@ Example: Send a text message **to a all participant with student role**.
 ```swift
 guard let studentRole = (roomModel.roles.first{$0.name == "student"}) else { return }
 try await roomModel.send(message: "How is it going?", to: .role(studentRole))
+```
+
+# How to show a Participant's Screen
+
+You use **HMSScreenTrackView** and pass a peer model to show/render its screen track. You can check which participants are sharing their screens using **peersSharingScreen** property of RoomModel instance.
+
+```swift
+...
+
+// Render video of each peer in the call
+    List {
+
+        // If a participant is sharing their screen, show their screen at the top of the list
+        if roomModel.peersSharingScreen.count > 0 {
+            TabView {
+                ForEach(roomModel.peersSharingScreen) { screenSharingPeer in
+                    HMSScreenTrackView(peer: screenSharingPeer)
+                }
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: 200)
+        }
+
+        // Render video of each peer in the call
+        ForEach(roomModel.peerModels) { peerModel in
+            VStack {
+                Text(peerModel.name)
+                HMSVideoTrackView(peer: peerModel)
+                    .frame(height: 200)
+            }
+        }
+    }
+
+...
 ```
 
 # How to Perform Actions
