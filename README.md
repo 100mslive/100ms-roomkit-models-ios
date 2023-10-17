@@ -248,9 +248,9 @@ class SampleHandler: HMSBroadcastSampleHandler {
 }
 ```
 
-5. Where "group.live.100ms.videoapp.roomkit" is the app group ID of your app group that created in step 2. Make sure to replace it with your App Group ID string.
+Where "group.live.100ms.videoapp.roomkit" is the app group ID of your app group that created in step 2. Make sure to replace it with your App Group ID string.
 
-With the above steps completed, let your RoomModel instance know about your App Group ID and your extension's bundle identifier like below:
+5. With the above steps completed, let your RoomModel instance know about your App Group ID and your extension's bundle identifier like below:
 
 ```swift
 @ObservedObject var roomModel = HMSRoomModel(roomCode: "qdw-mil-sev", options: .init(appGroupName: "group.live.100ms.videoapp.roomkit", screenShareBroadcastExtensionBundleId: "live.100ms.videoapp.roomkit.Screenshare"))
@@ -258,7 +258,58 @@ With the above steps completed, let your RoomModel instance know about your App 
 
 6. At this point you are ready to share screen of local iOS user. You can use the following code to make a button to start screen sharing from inside your app UI:
 
+```swift
+if roomModel.userCanShareScreen {
+    HMSShareScreenButton {
+        Image(systemName: "rectangle.inset.filled.and.person.filled")
+    }
+    .environmentObject(roomModel)
+}
+```
 
+Note that definition of HMSShareScreenButton is following that you can use in your app:
+
+```swift
+import SwiftUI
+import ReplayKit
+import Combine
+import HMSRoomModels
+
+extension RPSystemBroadcastPickerView: ObservableObject {}
+public struct HMSShareScreenButton<Content>: View where Content : View {
+    
+    @EnvironmentObject var room: HMSRoomModel
+    
+    @StateObject var broadcastPickerView = {
+        let picker = RPSystemBroadcastPickerView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        picker.showsMicrophoneButton = false
+        return picker
+    }()
+    
+    let onTap:(()->Void)?
+    @ViewBuilder let content: () -> Content
+    public init(onTap:(()->Void)? = nil, @ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+        self.onTap = onTap
+    }
+    
+    public var body: some View {
+        content()
+        .background(Color.black.opacity(0.0001))
+        .onTapGesture {
+            for subview in broadcastPickerView.subviews {
+                if let button = subview as? UIButton {
+                    button.sendActions(for: UIControl.Event.allTouchEvents)
+                }
+            }
+            onTap?()
+        }
+        .onAppear() {
+            broadcastPickerView.preferredExtension = room.options?.screenShareBroadcastExtensionBundleId
+        }
+    }
+}
+```
 
 # How to Perform Actions
 
