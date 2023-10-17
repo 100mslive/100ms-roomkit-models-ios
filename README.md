@@ -39,7 +39,7 @@ let roomModel = HMSRoomModel(token: /*pass role's auth token as string here*/)
 
 # How to Join/Leave a Room
 
-You call joinSession and leaveSession on RoomModel instance to join and leave the room.
+You call **joinSession** and **leaveSession** on RoomModel instance to join and leave the room.
 
 Example: Simple Meeting View with join and leave.
 
@@ -78,7 +78,7 @@ struct MeetingView: View {
 
 # How to display live streaming video
 
-You can use HMSVideoTrackView and pass a peer model to render it's video track.
+You can use **HMSVideoTrackView** and pass a **peer model** instance to render it's video track.
 
 Example: Simple Meeting View to render each peer's video in a list view.
 
