@@ -292,7 +292,7 @@ guard let studentRole = (roomModel.roles.first{$0.name == "student"}) else { ret
 try await roomModel.send(message: "How is it going?", to: .role(studentRole))
 ```
 
-# How to receive messages from other participants
+### How to receive messages from other participants
 
 You can access received messages from **messages** property of RoomModel like following:
 
