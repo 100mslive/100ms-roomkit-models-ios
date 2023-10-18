@@ -173,6 +173,47 @@ struct MeetingView: View {
 }
 ```
 
+### How to mute Remote Participant's Audio/Video or Request them to Unmute their Audio/Video
+
+You can call **toggleAudio** and **toggleVideo** to mute/unmute remote participant. Please note that you can't let just anyone mute others. First you need to create a role with the permissions to mute other participants and unmute other participants. Please note that they are **two separate permissions**, one for muting others and one to be able to unmute others. Also, while mute request will succeed directly, an unmute request will be send to remote peer. You can check if you have received an unmute request by checking **changeTrackStateRequests** property on Room Model instance.
+
+Example: Teacher wants to mute a student named 'Pawan''s audio (which is currently unmuted)
+
+```swift
+guard let studentPeerModel = (roomModel.peerModels.first{$0.name == "Pawan"}) else { return }
+try await studentPeerModel.toggleAudio()
+```
+
+Example: Teacher wants to request student named 'Pawan' to unmute their video (which is currently muted)
+
+```swift
+// Teacher's side - Toggle student peer model's video
+guard let studentPeerModel = (roomModel.peerModels.first{$0.name == "Pawan"}) else { return }
+try await studentPeerModel.toggleVideo()
+
+...
+
+// Student's side - Observe changeTrackStateRequests and unmute requested tracks
+
+VStack {
+  ...
+}
+.onChange(of: roomModel.changeTrackStateRequests) { changeTrackStateRequests in
+                
+    changeTrackStateRequests.forEach { request in
+        if let trackModel = roomModel.localPeerModel?.trackModels.first(where: {$0.track == request.track}) {
+            if trackModel.isMute {
+                Task {
+                    try await trackModel.toggleMute()
+                }
+            }
+        }
+    }
+    
+    roomModel.changeTrackStateRequests.removeAll()
+}
+```
+
 # How to send message to another participant
 
 You use **send(message: , to:)** method on RoomModel instance to send a message to another participant.
