@@ -76,6 +76,20 @@ struct MeetingView: View {
 }
 ```
 
+### How to end the Room
+
+Use **endSession** method on Room Model instance.
+
+```swift
+try await roomModel.endSession(withReason reason: /* an optional string describing the reason for ending the session for everyone*/, shouldAllowReJoin: /* an optional bool whether anyone should be allowed to join the room after it has been ended*/)
+```
+
+Example: End a class room locking it so that no-one can join/start the room again.
+
+```swift
+try await roomModel.endSession(withReason: "Class has been over.", shouldAllowReJoin: false)
+```
+
 # How to display live streaming video
 
 You can use **HMSVideoTrackView** and pass a **peer model** instance to show/render its video track.
