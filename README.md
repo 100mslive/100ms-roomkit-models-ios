@@ -90,6 +90,21 @@ Example: End a class room locking it so that no-one can join/start the room agai
 try await roomModel.endSession(withReason: "Class has been over.", shouldAllowReJoin: false)
 ```
 
+### How to remove a Participant from the Room
+
+Can't let just let anyone remove others from the room. First you need to create a role with the permissions to **removeOthers** from the room. Once this permission is checked in the dashboard for current user's role, you can call **remove(peer, withReason:)** method on Room Model instance to remove a remote participant.
+
+```swift
+try await roomModel.remove(peer: /* peer model instance*/, withReason reason: /* an optional string describing the reason for ending the session for everyone*/)
+```
+
+Example: Kick out a student out of the class room.
+
+```swift
+guard let studentPeerModel = (roomModel.peerModels.first{$0.name == "Pawan"}) else { return }
+try await roomModel.remove(peer: studentPeerModel, withReason: "Expelled from class.")
+```
+
 # How to display live streaming video
 
 You can use **HMSVideoTrackView** and pass a **peer model** instance to show/render its video track.
