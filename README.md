@@ -450,10 +450,10 @@ Peer Model instance exposes a shared dictionary called **metadata**. You can use
 
 Example
 
-### How to attach an Avatar in Metadata of a Participant so that Everyone in the Meeting can show the Avatar for that Participant.
+### How to attach a link to Particiapnt's Avatar image in Metadata of the Participant so that Everyone in the Meeting can show the Avatar for that Participant.
 
 ```swift
-roomModel.localPeerModel?.metadata["Avatar Image"] = UIImage(named: "user-avatar")?.jpegData(compressionQuality: 0.9)
+roomModel.localPeerModel?.metadata["Avatar Image URL"] = URL(string: /* link to avatar image*/)
 ```
 
 ### How would other Participants access this attached Avatar on a Peer and show it with their Video Tile
@@ -462,8 +462,8 @@ roomModel.localPeerModel?.metadata["Avatar Image"] = UIImage(named: "user-avatar
 // Render video of each peer in the call
 ForEach(roomModel.peerModels) { peerModel in
     VStack {
-        if let avatarData = peerModel.metadata["Avatar Image"] as? Data, let avatarImage = UIImage(data: avatarData) {
-            Image(uiImage: avatarImage)
+        if let url = peerModel.metadata["Avatar Image URL"] as? URL {
+            AsyncImage(url: url)
         }
         HMSVideoTrackView(peer: peerModel)
             .frame(height: 200)
