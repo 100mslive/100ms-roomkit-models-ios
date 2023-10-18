@@ -453,7 +453,7 @@ Example
 ### How to attach a link to Particiapnt's Avatar image in Metadata of the Participant so that Everyone in the Meeting can show the Avatar for that Participant.
 
 ```swift
-roomModel.localPeerModel?.metadata["Avatar Image URL"] = URL(string: /* link to avatar image*/)
+roomModel.localPeerModel?.metadata["Avatar Image URL"] = /* url string to avatar image */
 ```
 
 ### How would other Participants access this attached Avatar on a Peer and show it with their Video Tile
@@ -462,7 +462,7 @@ roomModel.localPeerModel?.metadata["Avatar Image URL"] = URL(string: /* link to 
 // Render video of each peer in the call
 ForEach(roomModel.peerModels) { peerModel in
     VStack {
-        if let url = peerModel.metadata["Avatar Image URL"] as? URL {
+        if let urlString = peerModel.metadata["Avatar Image URL"] as? String, let url = URL(string: urlString) {
             AsyncImage(url: url)
         }
         HMSVideoTrackView(peer: peerModel)
