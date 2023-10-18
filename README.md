@@ -143,6 +143,41 @@ struct MeetingView: View {
 }
 ```
 
+### How to show/render a Participant's Screen Track
+
+You use **HMSScreenTrackView** and pass a peer model to show/render its screen track. You can check which participants are sharing their screens using **peersSharingScreen** property of RoomModel instance.
+
+Example: If a participant is sharing their screen, show their screen at the top of the peer video list.
+
+```swift
+...
+
+List {
+
+    // If a participant is sharing their screen, show their screen at the top of the list
+    if roomModel.peersSharingScreen.count > 0 {
+        TabView {
+            ForEach(roomModel.peersSharingScreen) { screenSharingPeer in
+                HMSScreenTrackView(peer: screenSharingPeer)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .frame(height: 200)
+    }
+
+    // Render video of each peer in the call
+    ForEach(roomModel.peerModels) { peerModel in
+        VStack {
+            Text(peerModel.name)
+            HMSVideoTrackView(peer: peerModel)
+                .frame(height: 200)
+        }
+    }
+}
+
+...
+```
+
 # How to Mute/Unmute Audio and Video
 
 You can call **toggleMic** or **toggleCamera** method on RoomModel instance to toggle audio and video. You can also check whether the mic and camera is on by checking **isMicMute** and **isCameraMute** property on RoomModel instance.
@@ -273,41 +308,6 @@ List {
         Text(hmsMessage.message)
     }
 }
-```
-
-# How to show/render a Participant's Screen Track
-
-You use **HMSScreenTrackView** and pass a peer model to show/render its screen track. You can check which participants are sharing their screens using **peersSharingScreen** property of RoomModel instance.
-
-Example: If a participant is sharing their screen, show their screen at the top of the peer video list.
-
-```swift
-...
-
-List {
-
-    // If a participant is sharing their screen, show their screen at the top of the list
-    if roomModel.peersSharingScreen.count > 0 {
-        TabView {
-            ForEach(roomModel.peersSharingScreen) { screenSharingPeer in
-                HMSScreenTrackView(peer: screenSharingPeer)
-            }
-        }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .frame(height: 200)
-    }
-
-    // Render video of each peer in the call
-    ForEach(roomModel.peerModels) { peerModel in
-        VStack {
-            Text(peerModel.name)
-            HMSVideoTrackView(peer: peerModel)
-                .frame(height: 200)
-        }
-    }
-}
-
-...
 ```
 
 # How to share iOS screen of local user
