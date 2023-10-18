@@ -15,7 +15,7 @@ extension HMSRoomModel: HMSUpdateListener {
         roles = sdk.roles
         #endif
         isUserJoined = true
-        roomState = .meeting
+        roomState = .inMeeting
         
         if localPeerModel == nil {
             if let localPeer = sdk.localPeer {
@@ -177,7 +177,7 @@ extension HMSRoomModel: HMSUpdateListener {
     
     @MainActor public func on(removedFromRoom notification: HMSRemovedFromRoomNotification) {
         removedFromRoomNotification = notification
-        self.roomState = .leave(reason: notification.roomEnded ? .roomEnded : .userKickedOut)
+        self.roomState = .leftMeeting(reason: notification.roomEnded ? .roomEnded : .userKickedOut)
     }
     
     @MainActor public func on(sessionStoreAvailable store: HMSSessionStore) {

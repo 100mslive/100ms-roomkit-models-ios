@@ -61,5 +61,5 @@ public typealias RoleType = PreviewRoleModel
 public typealias PeerType = HMSPeerModel
 #else
 public typealias RoleType = HMSRole
-public typealias PeerType = HMSPeer
+public typealias PeerType = HMSPeerModel
 #endif

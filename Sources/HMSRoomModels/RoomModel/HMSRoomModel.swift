@@ -18,9 +18,9 @@ public enum HMSRoomState {
         case userKickedOut
     }
     
-    case none
-    case meeting
-    case leave(reason: LeaveReason)
+    case notJoined
+    case inMeeting
+    case leftMeeting(reason: LeaveReason)
 }
 
 public enum HMSRoomRecordingState {
@@ -84,11 +84,11 @@ public class HMSRoomModel: ObservableObject {
     }
 
     // Room state
-    @Published public var roomState: HMSRoomState = .none {
+    @Published public var roomState: HMSRoomState = .notJoined {
         
         didSet {
 #if !Preview
-            if case .leave = roomState {
+            if case .leftMeeting = roomState {
                 sdk.remove(delegate: self)
                 resetAllPeerAndRoomStates()
             }
