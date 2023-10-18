@@ -406,6 +406,73 @@ struct RoomModelStandaloneExample: View {
 
 Where "live.100ms.videoapp.roomkit.Screenshare" is the bundle id of your **Broadcast Upload Extension** target.
 
+
+# How to Store Common Objects/Information in the Room that is Shared across all Participants
+
+Room Model instance exposes a shared dictionary called **sharedStore**. You can use this to store any objects or primitives and they will be available to all participants in the room. You store key value pairs to this dictionary like following.
+
+Example
+
+### How to store Participant's ID in Shared Storage of the Room so that Everyone in the Meeting can access this ID
+
+```swift
+guard let highlightedStudent = (roomModel.peerModels.first{$0.name == "Pawan"}) else { return }
+roomModel.sharedStore["Highlighted Participant ID"] = highlightedStudent.id
+```
+
+### How would other Participants use this Shared ID
+
+Step 1. Make sure that room model observes this key like following:
+
+```swift
+roomModel.beginObserving(keys: ["Highlighted Participant ID"])
+```
+
+You generally do this at the start of the meeting, so that you can begin observing any changes for that key. If at any point in the call, you want to stop observing changes for a particular key call **stopObserving(keys:)** method passing an array of keys that you no more want to observe.
+
+Step 2. Display highlighted student
+
+```swift
+VStack {
+    if let highlightedStudentID = roomModel.sharedStore?["Highlighted Participant ID"] as? String,
+       let highlightedStudent = roomModel.peerModels.first(where: {$0.id == highlightedStudentID}) {
+        
+           HMSVideoTrackView(peer: highlightedStudent)
+    }
+}
+```
+
+Note that **sharedStore** dictionary is **Published** property of room model, thus any changes in this dictionary values reflect in your SwiftUI views automatically.
+
+# How to Attach Objects/Information to a Participant object in the Meeting so that All Participants can Access it
+
+Peer Model instance exposes a shared dictionary called **metadata**. You can use this to store any objects or primitives and they will get attached to that peer. And will be available to all participants in the room. You store key value pairs to this dictionary like following.
+
+Example
+
+### How to attach an Avatar in Metadata of a Participant so that Everyone in the Meeting can show the Avatar for that Participant.
+
+```swift
+roomModel.localPeerModel?.metadata["Avatar Image"] = UIImage(named: "user-avatar")?.jpegData(compressionQuality: 0.9)
+```
+
+### How would other Participants access this attached Avatar on a Peer and show it with their Video Tile
+
+```swift
+// Render video of each peer in the call
+ForEach(roomModel.peerModels) { peerModel in
+    VStack {
+        if let avatarData = peerModel.metadata["Avatar Image"] as? Data, let avatarImage = UIImage(data: avatarData) {
+            Image(uiImage: avatarImage)
+        }
+        HMSVideoTrackView(peer: peerModel)
+            .frame(height: 200)
+    }
+}
+```
+
+Note that **metadata** dictionary is **Published** property of peer model, thus any changes in this dictionary values reflect in your SwiftUI views automatically.
+
 # How to Perform Actions
 
 You can also perform actions on RoomModel, PeerModels and TrackModels.
