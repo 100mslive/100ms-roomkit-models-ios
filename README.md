@@ -474,9 +474,7 @@ ForEach(roomModel.peerModels) { peerModel in
 Note that **metadata** dictionary is **Published** property of peer model, thus any changes in this dictionary values reflect in your SwiftUI views automatically.
 
 
-# How to Perform Actions
-
-You can also perform actions on RoomModel, PeerModels and TrackModels.
+# Other Functionalities
 
 #### Preview the Room
 
@@ -500,7 +498,6 @@ try await roomModel.switchCamera()
 ```swift
 try await roomModel.changeUserName(/* new name as string */)
 ```
-
 
 #### Change role of a participant
 
@@ -529,9 +526,7 @@ try await roomModel.lowerHand()
 try await roomModel.lowerHand(of: /* instance of HMSPeerModel */)
 ```
 
-
 # Actions related to Conferecne/Live-streaming Room
-
 
 #### Start/Stop streaming the Room
 
@@ -541,7 +536,6 @@ try await roomModel.startStreaming()
 ```swift
 try await roomModel.stopStreaming()
 ```
-
 
 #### Start/Stop recording the Room
 
