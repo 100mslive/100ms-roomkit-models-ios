@@ -161,7 +161,7 @@ extension HMSRoomModel {
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {
-                    self.roomState = .leave(reason: .userLeft)
+                    self.roomState = .leftMeeting(reason: .userLeft)
                     continuation.resume()
                 }
             }
@@ -182,7 +182,7 @@ extension HMSRoomModel {
                     continuation.resume(throwing: error);
                 }
                 else {
-                    self.roomState = .leave(reason: .roomEnded)
+                    self.roomState = .leftMeeting(reason: .roomEnded)
                     continuation.resume()
                 }
             }
@@ -259,7 +259,7 @@ extension HMSRoomModel {
             case .role(let role):
                 sdk.sendGroupMessage(type: type, message: message, roles: [role], completion: sendCompletion)
             case .peer(let peer):
-                sdk.sendDirectMessage(type: type, message: message, peer: peer, completion: sendCompletion)
+                sdk.sendDirectMessage(type: type, message: message, peer: peer.peer, completion: sendCompletion)
             }
         }
 #endif

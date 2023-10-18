@@ -31,7 +31,7 @@ public struct HMSScreenTrackView: View {
     var contentMode: UIView.ContentMode
     var isZoomAndPanEnabled: Bool
     
-    init(peer: HMSPeerModel, contentMode: UIView.ContentMode = .scaleAspectFit, isZoomAndPanEnabled: Bool = true) {
+    public init(peer: HMSPeerModel, contentMode: UIView.ContentMode = .scaleAspectFit, isZoomAndPanEnabled: Bool = true) {
         self.peer = peer
         self.contentMode = contentMode
         self.isZoomAndPanEnabled = isZoomAndPanEnabled
