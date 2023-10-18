@@ -53,23 +53,23 @@ struct MeetingView: View {
         switch roomModel.roomState {
         case .notJoined, .leftMeeting:
             // Button to join the room
-            Button(action: {
+            Button {
                 Task {
                     try await roomModel.joinSession(userName: "iOS User")
                 }
-            }, label: {
+            } label: {
                 Text("Join")
-            })
+            }
         case .inMeeting:
             VStack {
                 // Button to leave the room
-                Button(action: {
+                Button {
                     Task {
                         try await roomModel.leaveSession()
                     }
-                }, label: {
+                } label: {
                     Text("Leave")
-                })
+                }
             }
         }
     }
@@ -80,7 +80,7 @@ struct MeetingView: View {
 
 You can use **HMSVideoTrackView** and pass a **peer model** instance to show/render its video track.
 
-Example: Simple Meeting View to render each peer's video in a list view.
+Example: Simple Meeting View to render each peer's video in a list.
 
 ```swift
 struct MeetingView: View {
@@ -89,28 +89,25 @@ struct MeetingView: View {
     
     var body: some View {
         
-        Group {
-            switch roomModel.roomState {
-            case .notJoined, .leftMeeting:
-                // Button to join the room
-                ...
-            case .inMeeting:
-                VStack {
-                    // Render video of each peer in the call
-                    List {
-                        ForEach(roomModel.peerModels) { peerModel in
-                            
-                            VStack {
-                                Text(peerModel.name)
-                                HMSVideoTrackView(peer: peerModel)
-                                    .frame(height: 200)
-                            }
+        switch roomModel.roomState {
+        case .notJoined, .leftMeeting:
+            // Button to join the room
+            ...
+        case .inMeeting:
+            VStack {
+                // Render video of each peer in the call
+                List {
+                    ForEach(roomModel.peerModels) { peerModel in
+                        VStack {
+                            Text(peerModel.name)
+                            HMSVideoTrackView(peer: peerModel)
+                                .frame(height: 200)
                         }
                     }
-
-                    // Button to leave the room
-                    ...
                 }
+
+                // Button to leave the room
+                ...
             }
         }
     }
@@ -130,33 +127,31 @@ struct MeetingView: View {
     
     var body: some View {
         
-        Group {
-            switch roomModel.roomState {
-            case .notJoined, .leftMeeting:
-                // Button to join the room
+        switch roomModel.roomState {
+        case .notJoined, .leftMeeting:
+            // Button to join the room
+            ...
+        case .inMeeting:
+            VStack {
+                // Render video of each peer in the call
                 ...
-            case .inMeeting:
-                VStack {
-                    // Render video of each peer in the call
+                
+                HStack {
+
+                    // Toggle local user's mic
+                    Image(systemName: roomModel.isMicMute ? "mic.slash" : "mic")
+                        .onTapGesture {
+                            roomModel.toggleMic()
+                        }
+
+                    // Toggle local user's camera
+                    Image(systemName: roomModel.isCameraMute ? "video.slash" : "video")
+                        .onTapGesture {
+                            roomModel.toggleCamera()
+                        }
+
+                    // Button to leave the room
                     ...
-                    
-                    HStack {
-
-                        // Toggle local user's mic
-                        Image(systemName: roomModel.isMicMute ? "mic.slash" : "mic")
-                            .onTapGesture {
-                                roomModel.toggleMic()
-                            }
-
-                        // Toggle local user's camera
-                        Image(systemName: roomModel.isCameraMute ? "video.slash" : "video")
-                            .onTapGesture {
-                                roomModel.toggleCamera()
-                            }
-
-                        // Button to leave the room
-                        ...
-                    }
                 }
             }
         }
@@ -204,42 +199,43 @@ Example: show list of all received messages.
 
 ```swift
 List {
-    ForEach(roomModel.messages, id: \.self) { message in
-        Text("message")
+    ForEach(roomModel.messages, id: \.self) { hmsMessage in
+        Text(hmsMessage.message)
     }
 }
 ```
 
-# How to show/render a Participant's Screen
+# How to show/render a Participant's Screen Track
 
 You use **HMSScreenTrackView** and pass a peer model to show/render its screen track. You can check which participants are sharing their screens using **peersSharingScreen** property of RoomModel instance.
+
+Example: If a participant is sharing their screen, show their screen at the top of the peer video list.
 
 ```swift
 ...
 
-// Render video of each peer in the call
-    List {
+List {
 
-        // If a participant is sharing their screen, show their screen at the top of the list
-        if roomModel.peersSharingScreen.count > 0 {
-            TabView {
-                ForEach(roomModel.peersSharingScreen) { screenSharingPeer in
-                    HMSScreenTrackView(peer: screenSharingPeer)
-                }
+    // If a participant is sharing their screen, show their screen at the top of the list
+    if roomModel.peersSharingScreen.count > 0 {
+        TabView {
+            ForEach(roomModel.peersSharingScreen) { screenSharingPeer in
+                HMSScreenTrackView(peer: screenSharingPeer)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height: 200)
         }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .frame(height: 200)
+    }
 
-        // Render video of each peer in the call
-        ForEach(roomModel.peerModels) { peerModel in
-            VStack {
-                Text(peerModel.name)
-                HMSVideoTrackView(peer: peerModel)
-                    .frame(height: 200)
-            }
+    // Render video of each peer in the call
+    ForEach(roomModel.peerModels) { peerModel in
+        VStack {
+            Text(peerModel.name)
+            HMSVideoTrackView(peer: peerModel)
+                .frame(height: 200)
         }
     }
+}
 
 ...
 ```
