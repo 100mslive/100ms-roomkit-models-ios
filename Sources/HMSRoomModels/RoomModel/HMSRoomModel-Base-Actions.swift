@@ -170,11 +170,11 @@ extension HMSRoomModel {
     }
     
     // End session
-    public func endSession() async throws {
+    public func endSession(withReason reason: String = "", shouldAllowReJoin: Bool = true) async throws {
 #if !Preview
         return try await withCheckedThrowingContinuation { continuation in
             
-            sdk.endRoom(reason: "") { [weak self] success, error in
+            sdk.endRoom(lock: !shouldAllowReJoin, reason: reason) { [weak self] success, error in
                 
                 guard let self else { return }
                 
@@ -225,9 +225,18 @@ extension HMSRoomModel {
     }
     
     // Kick peer out of meeting
-    public func remove(peer peerModel: HMSPeerModel) {
+    public func remove(peer peerModel: HMSPeerModel, withReason reason: String = "") async throws {
 #if !Preview
-        sdk.removePeer(peerModel.peer, reason: "")
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.removePeer(peerModel.peer, reason: reason) { success, error in
+                if let error = error {
+                    continuation.resume(throwing: error);
+                }
+                else {
+                    continuation.resume()
+                }
+            }
+        }
 #endif
     }
     
@@ -488,5 +497,13 @@ extension HMSRoomModel {
 #endif
         }
         return iterator
+    }
+    
+    public func beginObserving(keys: [String]) {
+        sharedSessionStore.beginObserving(keys: keys)
+    }
+    
+    public func stopObserving(keys: [String]) {
+        sharedSessionStore.stopObserving(keys: keys)
     }
 }

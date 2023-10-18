@@ -36,7 +36,7 @@ public struct HMSSharedStorage<Key: Hashable, Value> {
     }
 }
 
-public class HMSSharedSessionStore {
+internal class HMSSharedSessionStore {
     
     let serialQueue = DispatchQueue(label: "HMSSharedSessionStore Serial Queue")
     
@@ -75,7 +75,7 @@ public class HMSSharedSessionStore {
     }
     
     // Public interface
-    public func beginObserving(keys: [String]) {
+    internal func beginObserving(keys: [String]) {
         serialQueue.async {
             if let sessionStore = self.sessionStore {
                 keys.forEach { key in
@@ -88,7 +88,7 @@ public class HMSSharedSessionStore {
         }
     }
     
-    public func stopObserving(keys: [String]) {
+    internal func stopObserving(keys: [String]) {
         serialQueue.async {
             if let sessionStore = self.sessionStore {
                 keys.forEach { key in

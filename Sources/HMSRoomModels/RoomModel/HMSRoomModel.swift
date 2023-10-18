@@ -99,7 +99,7 @@ public class HMSRoomModel: ObservableObject {
     // Shared session metadata
     @Published internal var sessionStore: HMSSessionStore?
     @Published public var sharedStore: HMSSharedStorage<String, Any>?
-    @Published public var sharedSessionStore: HMSSharedSessionStore
+    @Published internal var sharedSessionStore: HMSSharedSessionStore
     
     // in-memory data
     @Published public var inMemoryStore = [String: Any?]()
