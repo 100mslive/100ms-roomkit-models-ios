@@ -473,6 +473,7 @@ ForEach(roomModel.peerModels) { peerModel in
 
 Note that **metadata** dictionary is **Published** property of peer model, thus any changes in this dictionary values reflect in your SwiftUI views automatically.
 
+
 # How to Perform Actions
 
 You can also perform actions on RoomModel, PeerModels and TrackModels.
@@ -487,41 +488,6 @@ You call preview method on the Room model instance to preview the room. You can 
 roomModel.preview(userName: /*pass participant's name as string here*/)
 ```
 
-#### Join the Room
-
-To join and interact with others in audio or video call, the user needs to join a room.
-
-You call join method on Room Model instance to join the room. You can optionally pass the name of the participant in the join method.
-
-```swift
-roomModel.join(userName: /*pass participant's name as string here*/)
-```
-
-# Actions on Local User
-
-#### Toggle Mic
-
-```swift
-roomModel.toggleMic()
-```
-
-#### Toggle Camera
-
-```swift
-roomModel.toggleCamera()
-```
-
-#### Leave session
-
-```swift
-try await roomModel.leaveSession()
-```
-
-#### End Session for all
-
-```swift
-try await roomModel.endSession()
-```
 
 #### Switch Camera (Front/Back)
 
@@ -534,24 +500,6 @@ try await roomModel.switchCamera()
 ```swift
 try await roomModel.changeUserName(/* new name as string */)
 ```
-
-# Actions on remote participants
-
-#### Remove a peer from meeting
-
-```swift
-roomModel.remove(peer: /* HMSPeerModel instance */)
-```
-
-Example: Remove a random remote particiapnt from the call.
-
-```swift
-guard let randomRemoteParticiapnt = roomModel.remotePeerModels.randomElement() else {return}
-roomModel.remove(peer: randomRemoteParticiapnt)
-```
-
-#### Send chat message to a remote participant
-
 
 
 #### Change role of a participant
