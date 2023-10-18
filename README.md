@@ -14,7 +14,7 @@ You can integrate RoomModels SDK into your project using Swift Package Manager (
 3. In the dialog that appears, enter the following URL as the package source: https://github.com/100mslive/100ms-roomkit-models-ios
 4. Click `Next` and follow the prompts to add the package to your project.
 
-# RoomModels Basics
+# RoomModels SDK Basics
 
 #### Import SDK
 You import the RoomModels SDK with following import statement
@@ -50,28 +50,26 @@ struct MeetingView: View {
     
     var body: some View {
         
-        Group {
-            switch roomModel.roomState {
-            case .none, .leave:
-                // Button to join the room
+        switch roomModel.roomState {
+        case .notJoined, .leftMeeting:
+            // Button to join the room
+            Button(action: {
+                Task {
+                    try await roomModel.joinSession(userName: "iOS User")
+                }
+            }, label: {
+                Text("Join")
+            })
+        case .inMeeting:
+            VStack {
+                // Button to leave the room
                 Button(action: {
                     Task {
-                        try await roomModel.joinSession(userName: "iOS User")
+                        try await roomModel.leaveSession()
                     }
                 }, label: {
-                    Text("Join")
+                    Text("Leave")
                 })
-            case .meeting:
-                VStack {
-                    // Button to leave the room
-                    Button(action: {
-                        Task {
-                            try await roomModel.leaveSession()
-                        }
-                    }, label: {
-                        Text("Leave")
-                    })
-                }
             }
         }
     }
@@ -93,10 +91,10 @@ struct MeetingView: View {
         
         Group {
             switch roomModel.roomState {
-            case .none, .leave:
+            case .notJoined, .leftMeeting:
                 // Button to join the room
                 ...
-            case .meeting:
+            case .inMeeting:
                 VStack {
                     // Render video of each peer in the call
                     List {
@@ -134,10 +132,10 @@ struct MeetingView: View {
         
         Group {
             switch roomModel.roomState {
-            case .none, .leave:
+            case .notJoined, .leftMeeting:
                 // Button to join the room
                 ...
-            case .meeting:
+            case .inMeeting:
                 VStack {
                     // Render video of each peer in the call
                     ...
@@ -294,10 +292,10 @@ struct RoomModelStandaloneExample: View {
     var body: some View {
         
         switch roomModel.roomState {
-        case .none, .leave:
+        case .notJoined, .leftMeeting:
             // Button to join the room
             ...
-        case .meeting:
+        case .inMeeting:
             VStack {
                 List {
                     
