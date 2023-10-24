@@ -1,7 +1,7 @@
 # 🎉 100ms Meeting Room Models 🚀
 Introducing meeting room models that simplify SwiftUI based application development using 100ms SDK
 
-Checkout the complete API documentation [here](https://100mslive.github.io/100ms-roomkit-models-ios/documentation/hmsroommodels).
+Checkout the complete API documentation [here](https://www.100ms.live/docs/api-reference/ios/HMSRoomModelsSDK/documentation/hmsroommodels/hmsroommodel).
   
 # Pre-requisites
 - Xcode 14 or higher
