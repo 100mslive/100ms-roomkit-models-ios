@@ -1,7 +1,7 @@
 # 🎉 100ms Meeting Room Models 🚀
 Introducing meeting room models that simplify SwiftUI based application development using 100ms SDK
 
-Checkout the complete API documentation [here](https://100mslive.github.io/100ms-roomkit-models-ios/documentation/hmsroommodels).
+Checkout the complete API documentation [here](https://www.100ms.live/docs/api-reference/ios/HMSRoomModelsSDK/documentation/hmsroommodels/hmsroommodel).
   
 # Pre-requisites
 - Xcode 14 or higher
@@ -80,7 +80,7 @@ struct MeetingView: View {
 
 ### How to end the Room
 
-Use **endSession** method on Room Model instance.
+Call **endSession** method on HMSRoomModel instance.
 
 ```swift
 try await roomModel.endSession(withReason reason: /* an optional string describing the reason for ending the session for everyone*/, shouldAllowReJoin: /* an optional bool whether anyone should be allowed to join the room after it has been ended*/)
@@ -90,6 +90,44 @@ Example: End a class room locking it so that no-one can join/start the room agai
 
 ```swift
 try await roomModel.endSession(withReason: "Class has been over.", shouldAllowReJoin: false)
+```
+
+### How to know when the Room has been ended
+
+You check the **roomState** property on HMSRoomModel instance and see if it's set to **leftMeeting(reason: LeaveReason)** enum.
+
+```swift
+struct MeetingView: View {
+    
+    @ObservedObject var roomModel = HMSRoomModel(roomCode: "qdr-mik-seb")
+    
+    var body: some View {
+        
+        switch roomModel.roomState {
+        case .notJoined:
+            // Button to join the room
+            ...
+        case .inMeeting:
+            VStack {
+                // Button to leave the room
+                ...
+            }
+        case .leftMeeting(reason: let reason):
+            if reason == .roomEnded {
+                // show room ended view here
+            }
+        }
+    }
+}
+```
+
+where leave reasons can be following:
+```swift
+public enum LeaveReason {
+  case roomEnded
+  case userLeft
+  case userKickedOut
+}
 ```
 
 ### How to remove a Participant from the Room
