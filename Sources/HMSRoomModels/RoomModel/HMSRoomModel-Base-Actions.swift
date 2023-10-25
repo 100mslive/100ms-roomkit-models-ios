@@ -182,7 +182,7 @@ extension HMSRoomModel {
                     continuation.resume(throwing: error);
                 }
                 else {
-                    self.roomState = .leftMeeting(reason: .roomEnded)
+                    self.roomState = .leftMeeting(reason: .roomEnded(reasonString: reason))
                     continuation.resume()
                 }
             }
@@ -340,7 +340,7 @@ extension HMSRoomModel {
 #endif
     }
     
-    public func changeUserName(_ name: String) async throws {
+    public func changeUserName(to name: String) async throws {
 #if !Preview
         return try await withCheckedThrowingContinuation { continuation in
             sdk.change(name: name) { _, error in
@@ -368,12 +368,12 @@ extension HMSRoomModel {
 #endif
     }
     
-    public func changeRole(of peer: HMSPeerModel, to role: String, force: Bool = false) async throws {
+    public func changeRole(of peer: HMSPeerModel, to role: String, shouldAskForApproval: Bool = true) async throws {
 #if !Preview
         guard let destinationRole = roles.first(where: { $0.name == role }) else { return }
         
         return try await withCheckedThrowingContinuation { continuation in
-            sdk.changeRole(for: peer.peer, to: destinationRole, force: force) {_, error in
+            sdk.changeRole(for: peer.peer, to: destinationRole, force: !shouldAskForApproval) {_, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {

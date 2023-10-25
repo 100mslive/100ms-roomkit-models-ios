@@ -177,7 +177,7 @@ extension HMSRoomModel: HMSUpdateListener {
     
     @MainActor public func on(removedFromRoom notification: HMSRemovedFromRoomNotification) {
         removedFromRoomNotification = notification
-        self.roomState = .leftMeeting(reason: notification.roomEnded ? .roomEnded : .userKickedOut)
+        self.roomState = .leftMeeting(reason: notification.roomEnded ? .roomEnded(reasonString: notification.reason) : .removedFromRoom(reasonString: notification.reason))
     }
     
     @MainActor public func on(sessionStoreAvailable store: HMSSessionStore) {
