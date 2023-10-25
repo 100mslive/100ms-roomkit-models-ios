@@ -13,9 +13,9 @@ import HMSAnalyticsSDK
 public enum HMSRoomState {
     
     public enum LeaveReason {
-        case roomEnded
+        case roomEnded(reasonString: String)
         case userLeft
-        case userKickedOut
+        case removedFromRoom(reasonString: String)
     }
     
     case notJoined
