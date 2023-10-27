@@ -80,14 +80,15 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
     
     @StateObject var coordinator = Coordinator()
 
-#if !Preview
+    let url: URL?
     
+#if !Preview
     var onCue: ((HMSHLSCue)->Void)?
     var onPlaybackFailure: ((Error)->Void)?
     var onPlaybackStateChanged: ((HMSHLSPlaybackState)->Void)?
     var onResolutionChanged: ((CGSize)->Void)?
     
-    let url: URL?
+    
     @ViewBuilder let videoOverlay: ((HMSHLSPlayer) -> VideoOverlay)?
     public init(url: URL? = nil, @ViewBuilder videoOverlay: @escaping (HMSHLSPlayer) -> VideoOverlay) {
         self.videoOverlay = videoOverlay
