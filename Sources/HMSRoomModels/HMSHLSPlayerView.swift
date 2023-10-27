@@ -87,16 +87,21 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
     var onPlaybackStateChanged: ((HMSHLSPlaybackState)->Void)?
     var onResolutionChanged: ((CGSize)->Void)?
     
+    let url: URL?
     @ViewBuilder let videoOverlay: ((HMSHLSPlayer) -> VideoOverlay)?
-    public init(@ViewBuilder videoOverlay: @escaping (HMSHLSPlayer) -> VideoOverlay) {
+    public init(url: URL? = nil, @ViewBuilder videoOverlay: @escaping (HMSHLSPlayer) -> VideoOverlay) {
         self.videoOverlay = videoOverlay
+        self.url = url
     }
 #endif
     
     public var body: some View {
         Group {
 #if !Preview
-            if let url = roomModel.hlsVariants.first?.url {
+            if let url = url {
+                videoView(url: url)
+            }
+            else if let url = roomModel.hlsVariants.first?.url {
                 videoView(url: url)
             }
 #else
@@ -128,7 +133,9 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         }
 
         .onChange(of: roomModel.hlsVariants) { variant in
-            coordinator.player.play(url)
+            if self.url == nil {
+                coordinator.player.play(url)
+            }
         }
 #else
         VideoPlayer(player: coordinator.player)
@@ -183,10 +190,11 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
 }
 
 extension HMSHLSPlayerView where VideoOverlay == EmptyView {
-    public init() {
+    public init(url: URL? = nil) {
 #if !Preview
         videoOverlay = nil
 #endif
+        self.url = url
     }
     
 #if !Preview
