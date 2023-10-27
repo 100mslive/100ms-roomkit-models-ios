@@ -117,6 +117,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
             coordinator.onPlaybackFailure = onPlaybackFailure
             coordinator.onPlaybackStateChanged = onPlaybackStateChanged
             coordinator.onResolutionChanged = onResolutionChanged
+            coordinator.player.analytics = roomModel.sdk
 #endif
         }
     }
