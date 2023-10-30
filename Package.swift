@@ -21,6 +21,9 @@ let package = Package(
             name: "HMSHLSPlayerSDK",
             targets: ["HMSHLSPlayerSDK"]),
         .library(
+            name: "HMSBroadcastExtensionSDK",
+            targets: ["HMSBroadcastExtensionSDK"]),
+        .library(
             name: "WebRTC",
             targets: ["WebRTC"]),
     ],
@@ -54,6 +57,11 @@ let package = Package(
             name: "WebRTC",
             url: "https://github.com/100mslive/webrtc-ios/releases/download/1.0.5116/WebRTC.xcframework.zip",
             checksum: "5f38579bb743b089d95017fa56dc76f8e3e440dbdd56061db04c26448262cfee"
+        ),
+        .binaryTarget(
+            name: "HMSBroadcastExtensionSDK",
+            url: "https://github.com/100mslive/100ms-ios-broadcast-sdk/releases/download/1.0.0/HMSBroadcastExtensionSDK.xcframework.zip",
+            checksum: "589a000dfdc948f938482d8affb333644ccc74300e5c7df2ea1aa887a94ae0b9"
         ),
     ]
 )
