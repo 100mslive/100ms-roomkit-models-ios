@@ -12,7 +12,7 @@ import HMSAnalyticsSDK
 
 public enum HMSRoomState {
     
-    public enum LeaveReason {
+    public enum RoomLeaveReason {
         case roomEnded(reasonString: String)
         case userLeft
         case removedFromRoom(reasonString: String)
@@ -20,7 +20,7 @@ public enum HMSRoomState {
     
     case notJoined
     case inMeeting
-    case leftMeeting(reason: LeaveReason)
+    case leftMeeting(reason: RoomLeaveReason)
 }
 
 public enum HMSRoomRecordingState {
