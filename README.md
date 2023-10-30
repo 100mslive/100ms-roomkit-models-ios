@@ -94,7 +94,7 @@ try await roomModel.endSession(withReason: "Class has been over.", shouldAllowRe
 
 ### How to know when the Room has been ended
 
-You check the **roomState** property on HMSRoomModel instance and see if it's set to **leftMeeting(reason: LeaveReason)** enum.
+You check the **roomState** property on HMSRoomModel instance and see if it's set to **leftMeeting(reason: RoomLeaveReason)** enum.
 
 ```swift
 struct MeetingView: View {
@@ -123,10 +123,10 @@ struct MeetingView: View {
 
 where leave reasons can be following:
 ```swift
-public enum LeaveReason {
-  case roomEnded
-  case userLeft
-  case userKickedOut
+public enum RoomLeaveReason {
+    case roomEnded(reasonString: String)
+    case userLeft
+    case removedFromRoom(reasonString: String)
 }
 ```
 
