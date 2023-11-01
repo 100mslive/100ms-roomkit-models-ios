@@ -119,6 +119,10 @@ public class HMSRoomModel: ObservableObject {
     @Published public var changeTrackStateRequests = [HMSChangeTrackStateRequest]()
     @Published public var removedFromRoomNotification: HMSRemovedFromRoomNotification?
     
+    public var interactivityCenter: HMSInteractivityCenter {
+        sdk.interactivityCenter
+    }
+    
     public let options: HMSRoomOptions?
     public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
         self.roomCode = roomCode
