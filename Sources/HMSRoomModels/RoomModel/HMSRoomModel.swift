@@ -157,6 +157,20 @@ public class HMSRoomModel: ObservableObject {
         sharedSessionStore = HMSSharedSessionStore()
         sharedSessionStore.roomModel = self
         
+        sdk.interactivityCenter.addPollUpdateListner { [weak self] updatedPoll, pollUpdate in
+            
+            guard let self else { return }
+            
+            let pollModel = HMSPollModel(poll: updatedPoll, roomModel: self)
+            
+            if polls.contains(pollModel) {
+                polls.update(with: pollModel)
+            }
+            else {
+                polls.insert(pollModel)
+            }
+        }
+        
         #if !Preview
         sdk.logger = self
         #endif
@@ -237,6 +251,8 @@ public class HMSRoomModel: ObservableObject {
         options = nil
     }
 #endif
+    
+    @Published public var polls = Set<HMSPollModel>()
 }
 
 #if !Preview
