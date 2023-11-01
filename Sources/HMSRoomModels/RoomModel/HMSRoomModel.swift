@@ -110,7 +110,7 @@ public class HMSRoomModel: ObservableObject {
     
     var authToken: String?
     let sdk: HMSSDK
-    var room: HMSRoom? = nil
+    public var room: HMSRoom? = nil
     
     // Room states
     @Published public var hlsVariants = [HMSHLSVariant]()
