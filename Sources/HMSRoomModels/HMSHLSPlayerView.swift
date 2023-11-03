@@ -25,7 +25,11 @@ extension AVPlayerViewController {
         super.viewDidLoad()
         self.showsPlaybackControls = false
         self.allowsPictureInPicturePlayback = false
-        self.canStartPictureInPictureAutomaticallyFromInline = false
+        if #available(iOS 14.2, *) {
+            self.canStartPictureInPictureAutomaticallyFromInline = false
+        } else {
+            // Fallback on earlier versions
+        }
         self.videoGravity = .resizeAspectFill
         AVPlayerModel.shared.currentAVPlayerInstance = self
     }
@@ -40,7 +44,11 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         
         init() {
             player.delegate = self
-            player._nativePlayer.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+            if #available(iOS 15.0, *) {
+                player._nativePlayer.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+            } else {
+                // Fallback on earlier versions
+            }
         }
         
         var onCue: ((HMSHLSCue)->Void)?
