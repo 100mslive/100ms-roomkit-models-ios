@@ -40,7 +40,7 @@ extension HMSRoomModel: HMSUpdateListener {
         case .browserRecordingStateUpdated, .hlsRecordingStateUpdated:
             updateRecordingState()
         case .serverRecordingStateUpdated:
-            break
+            updateRecordingState()
         case .hlsStreamingStateUpdated, .rtmpStreamingStateUpdated:
             updateStreamingState()
         case .peerCountUpdated:

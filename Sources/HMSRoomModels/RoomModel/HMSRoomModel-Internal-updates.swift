@@ -122,10 +122,11 @@ extension HMSRoomModel {
     
     func updateRecordingState() {
         guard let room = room else { assertionFailure("shouldn't be here"); return }
-        if room.browserRecordingState.initialising {
-            recordingState = .initializing
-        } else if room.browserRecordingState.running || room.serverRecordingState.running || room.hlsRecordingState.running {
+        
+        if room.browserRecordingState.running || room.serverRecordingState.running || room.hlsRecordingState.running {
             recordingState = .recording
+        } else if room.browserRecordingState.initialising  {
+            recordingState = .initializing
         } else {
             if room.browserRecordingState.error != nil || room.hlsRecordingState.error != nil {
                 recordingState = .failed
