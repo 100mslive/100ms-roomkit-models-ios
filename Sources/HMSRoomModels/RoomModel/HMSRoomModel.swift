@@ -23,13 +23,6 @@ public enum HMSRoomState {
     case leftMeeting(reason: RoomLeaveReason)
 }
 
-public enum HMSRoomRecordingState {
-    case stopped
-    case initializing
-    case recording
-    case failed
-}
-
 public class HMSRoomModel: ObservableObject {
     
     internal var joinCancellable: AnyCancellable?
@@ -73,7 +66,7 @@ public class HMSRoomModel: ObservableObject {
     @Published public var name: String?
     @Published public var sessionID: String?
     @Published public var sessionStartedAt: Date?
-    @Published public var recordingState: HMSRoomRecordingState = .stopped
+    @Published public var recordingState: HMSRecordingState = .stopped
     @Published public var speakers = [HMSPeerModel]()
 
     public var isLarge: Bool {

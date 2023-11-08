@@ -34,7 +34,7 @@ extension HMSRoomModel {
     public static func dummyRoom(_ remotePeerCount: Int, _ additionalPeers: [AdditionalPeers] = []) -> HMSRoomModel {
         
         let room = HMSRoomModel()
-        room.recordingState = .recording
+        room.recordingState = .started
         room.isBeingStreamed = true
         room.isUserJoined = true
         room.userCanEndRoom = true

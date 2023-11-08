@@ -123,24 +123,20 @@ extension HMSRoomModel {
     func updateRecordingState() {
         guard let room = room else { assertionFailure("shouldn't be here"); return }
         
-        if room.browserRecordingState.running || room.serverRecordingState.running || room.hlsRecordingState.running {
-            recordingState = .recording
-        } else if room.browserRecordingState.initialising  {
-            recordingState = .initializing
-        } else {
-            if room.browserRecordingState.error != nil || room.hlsRecordingState.error != nil {
-                recordingState = .failed
-            }
-            else {
-                recordingState = .stopped
-            }
+        if room.browserRecordingState.state != .none {
+            recordingState = room.browserRecordingState.state
+        } else if room.hlsRecordingState.state != .none {
+            recordingState = room.hlsRecordingState.state
+        } else if room.serverRecordingState.state != .none {
+            recordingState = room.serverRecordingState.state
         }
     }
     
     func updateStreamingState() {
         guard let room = room else { assertionFailure("shouldn't be here"); return }
+        let runningStates: [HMSStreamingState] = [.starting, .started]
         
-        isBeingStreamed = room.rtmpStreamingState.running || room.hlsStreamingState.running
+        isBeingStreamed = runningStates.contains(room.rtmpStreamingState.state) || runningStates.contains(room.hlsStreamingState.state)
         hlsVariants = room.hlsStreamingState.variants
     }
 }

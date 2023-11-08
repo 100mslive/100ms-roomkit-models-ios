@@ -317,7 +317,7 @@ extension HMSRoomModel {
                     continuation.resume(throwing: error)
                 } else {
                     if let self = self, self.recordingState == .stopped {
-                        self.recordingState = .initializing
+                        self.recordingState = .starting
                     }
                     continuation.resume()
                 }
