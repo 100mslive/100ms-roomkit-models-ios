@@ -20,7 +20,7 @@ extension HMSRoomModel {
         else {
             return try await withCheckedThrowingContinuation({ continuation in
                 
-                sdk.getAuthTokenByRoomCode(roomCode) { authToken, error in
+                sdk.getAuthTokenByRoomCode(roomCode, userID: userId) { authToken, error in
                     guard let authToken = authToken else {
                         continuation.resume(throwing: error!);
                         return
