@@ -9,6 +9,7 @@ import SwiftUI
 import Combine
 import HMSSDK
 import HMSAnalyticsSDK
+import JWTDecode
 
 public enum HMSRoomState {
     
@@ -46,7 +47,8 @@ public class HMSRoomModel: ObservableObject {
     // Local peer states
     @Published public var isMicMute: Bool = true
     @Published public var isCameraMute: Bool = true
-    @Published public var userName: String = ""
+    @Published public var userName: String
+    @Published public private(set) var userId: String?
     @Published public var isPreviewJoined: Bool = false
     @Published public var isUserJoined: Bool = false
     @Published public var isUserSharingScreen: Bool = false
@@ -126,6 +128,8 @@ public class HMSRoomModel: ObservableObject {
         self.providedToken = nil
         
         self.options = options
+        self.userName = options?.userName ?? ""
+        self.userId = options?.userId
         
         self.sdk = HMSSDK.build() { sdk in
             if let groupName = options?.appGroupName {
@@ -147,6 +151,16 @@ public class HMSRoomModel: ObservableObject {
         self.providedToken = token
         
         self.options = options
+        self.userName = options?.userName ?? ""
+        
+        do {
+            let jwt = try decode(jwt: token)
+            let userId = jwt.claim(name: "user_id").string
+            self.userId = userId
+        }
+        catch {
+            self.userId = nil
+        }
         
         self.sdk = HMSSDK.build() { sdk in
             if let groupName = options?.appGroupName {
@@ -236,6 +250,7 @@ public class HMSRoomModel: ObservableObject {
         providedToken = nil
         sdk = .build()
         options = nil
+        userName = ""
     }
 #endif
 }
