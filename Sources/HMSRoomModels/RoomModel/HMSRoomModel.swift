@@ -240,10 +240,9 @@ public class HMSRoomModel: ObservableObject {
         }
     }
     
-    @Published public var roles = [HMSRole]()
+    
     
 #else
-    @Published public var roles = [PreviewRoleModel]()
     public init(){
         sharedSessionStore = HMSSharedSessionStore()
         roomCode = nil
@@ -253,6 +252,7 @@ public class HMSRoomModel: ObservableObject {
         userName = ""
     }
 #endif
+    @Published public var roles = [HMSRole]()
 }
 
 #if !Preview

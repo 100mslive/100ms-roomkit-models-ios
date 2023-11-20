@@ -268,6 +268,7 @@ extension HMSRoomModel {
             case .role(let role):
                 sdk.sendGroupMessage(type: type, message: message, roles: [role], completion: sendCompletion)
             case .peer(let peer):
+                guard let peer else { return }
                 sdk.sendDirectMessage(type: type, message: message, peer: peer.peer, completion: sendCompletion)
             }
         }

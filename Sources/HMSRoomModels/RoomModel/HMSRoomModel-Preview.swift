@@ -42,11 +42,11 @@ extension HMSRoomModel {
         room.messages = [HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(message: "last")]
         
         room.userName = "Pawan's iOS"
-        room.roles = [PreviewRoleModel(name: "host"), PreviewRoleModel(name: "guest")]
+        room.roles = []
         
         var peers = [localPeer]
         if remotePeerCount > 0 {
-            peers.append(contentsOf: (0..<remotePeerCount).map { i in HMSPeerModel(name: "Remote Peer \(i)", role: room.roles[i % 2]) })
+            peers.append(contentsOf: (0..<remotePeerCount).map { i in HMSPeerModel(name: "Remote Peer \(i)") })
         }
         peers.forEach {
             $0.downlinkQuality = Int.random(in: 0..<5)

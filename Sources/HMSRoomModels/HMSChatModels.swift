@@ -41,7 +41,7 @@ public struct HMSMessageModel: Hashable, Identifiable {
 public enum HMSRecipient {
     case everyone
     case role(RoleType)
-    case peer(PeerType)
+    case peer(PeerType?)
     
     public func toString() -> String {
         switch self {
@@ -51,15 +51,10 @@ public enum HMSRecipient {
         case .role(let role):
             return role.name.capitalized
         case .peer(let peer):
-            return peer.name
+            return peer?.name ?? "Choose Participant"
         }
     }
 }
 
-#if Preview
-public typealias RoleType = PreviewRoleModel
-public typealias PeerType = HMSPeerModel
-#else
 public typealias RoleType = HMSRole
 public typealias PeerType = HMSPeerModel
-#endif

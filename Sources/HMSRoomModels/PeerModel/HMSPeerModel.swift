@@ -53,9 +53,10 @@ public class HMSPeerModel: ObservableObject {
     @Published public var inMemoryStore = [String: Any?]()
     public var inMemoryStaticStore = [String: Any?]()
     
+    @Published public internal(set) var role: HMSRole?
 #if !Preview
     public let peer: HMSPeer
-    @Published public internal(set) var role: HMSRole?
+    
     
     init(peer: HMSPeer, roomModel: HMSRoomModel?) {
         self.roomModel = roomModel
@@ -100,12 +101,11 @@ public class HMSPeerModel: ObservableObject {
         peer.isLocal
     }
 #else
-    public var role: PreviewRoleModel?
-    public init(name: String? = nil, role: PreviewRoleModel = PreviewRoleModel(name: "host"), isLocal: Bool = false) {
+    public init(name: String? = nil, isLocal: Bool = false) {
         self.id = UUID().uuidString
         self.name = name ?? "Participant's Name"
         self.canMute = true
-        self.role = role
+        self.role = nil
         self.isLocal = isLocal
         self.metadata = HMSStorage<String, Any>() { _ in}
         self.isVideoDegraded = false
