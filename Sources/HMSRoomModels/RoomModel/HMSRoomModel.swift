@@ -62,12 +62,8 @@ public class HMSRoomModel: ObservableObject {
     }
     @Published public var isReconnecting = false
     @Published public var isBeingStreamed: Bool = false
-#if !Preview
     @Published public var messages = [HMSMessage]()
     @Published public var serviceMessages = [HMSMessage]()
-#else
-    @Published public var messages = [HMSMessageModel]()
-#endif
     
     // Room states
     @Published public var peerCount: Int? = nil

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import HMSSDK
 
 #if Preview
 extension HMSRoomModel {
@@ -39,7 +40,7 @@ extension HMSRoomModel {
         room.isUserJoined = true
         room.userCanEndRoom = true
         
-        room.messages = [HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(), HMSMessageModel(message: "last")]
+        room.messages = [HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey")]
         
         room.userName = "Pawan's iOS"
         room.roles = []
