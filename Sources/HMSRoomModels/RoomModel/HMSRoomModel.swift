@@ -241,7 +241,7 @@ public class HMSRoomModel: ObservableObject {
 #else
     public init(){
         sharedSessionStore = HMSSharedSessionStore()
-        roomCode = nil
+        roomCode = "nil-some-code"
         providedToken = nil
         sdk = .build()
         options = nil
