@@ -40,7 +40,11 @@ extension HMSRoomModel {
         room.isUserJoined = true
         room.userCanEndRoom = true
         
-        room.messages = [HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey")]
+        room.sharedStore = HMSSharedStorage(setHandler: { _, _ in
+        })
+        room.pinnedMessages = [.init(text: "Pawan: hello there", id: "1", pinnedBy: "local user"), .init(text: "Dmitry: what's up", id: "2", pinnedBy: "user 1"), .init(text: "Nihal: this message is supposed to be very long so that we can see how a multiline pinned message will look like in the UI. this message is supposed to be very long so that we can see how a multiline pinned message will look like in the UI.", id: "3", pinnedBy: "remote user")]
+        
+        room.messages = [HMSMessage(message: "wph"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey"), HMSMessage(message: "hey")]
         
         room.userName = "Pawan's iOS"
         room.roles = []
