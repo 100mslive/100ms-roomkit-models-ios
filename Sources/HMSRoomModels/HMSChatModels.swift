@@ -38,7 +38,7 @@ import HMSSDK
 //#endif
 //}
 
-public enum HMSRecipient {
+public enum HMSRecipient: Equatable {
     case everyone
     case role(HMSRole)
     case peer(HMSPeerModel?)
