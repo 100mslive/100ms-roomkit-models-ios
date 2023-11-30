@@ -42,6 +42,14 @@ public class HMSPeerModel: ObservableObject {
     @Published public internal(set) var canStartStopHLSStream = false
     @Published public internal(set) var canStartStopRecording = false
     
+    public var customerUserId: String? {
+        #if !Preview
+        peer.customerUserID
+        #else
+        return "dummy customer id"
+        #endif
+    }
+    
     @Published public var metadata: HMSStorage<String, Any>
     @Published public var trackModels = [HMSTrackModel]()
     @Published public internal(set) var lastSpokenTimestamp: Date = .distantPast
@@ -54,10 +62,11 @@ public class HMSPeerModel: ObservableObject {
     public var inMemoryStaticStore = [String: Any?]()
     
     @Published public internal(set) var role: HMSRole?
+    
+    
 #if !Preview
     public let peer: HMSPeer
-    
-    
+
     init(peer: HMSPeer, roomModel: HMSRoomModel?) {
         self.roomModel = roomModel
         self.peer = peer
@@ -101,6 +110,7 @@ public class HMSPeerModel: ObservableObject {
         peer.isLocal
     }
 #else
+    public let peer: HMSPeer!
     public init(name: String? = nil, isLocal: Bool = false) {
         self.id = UUID().uuidString
         self.name = name ?? "Participant's Name"
@@ -109,6 +119,7 @@ public class HMSPeerModel: ObservableObject {
         self.isLocal = isLocal
         self.metadata = HMSStorage<String, Any>() { _ in}
         self.isVideoDegraded = false
+        self.peer = nil
     }
     public var isLocal = false
 #endif
