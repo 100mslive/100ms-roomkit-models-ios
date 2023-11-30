@@ -23,7 +23,7 @@ class AVPlayerModel {
 extension AVPlayerViewController {
     override open func viewDidLoad() {
         super.viewDidLoad()
-        self.showsPlaybackControls = false
+        self.showsPlaybackControls = true
         self.allowsPictureInPicturePlayback = false
         self.canStartPictureInPictureAutomaticallyFromInline = false
         self.videoGravity = .resizeAspectFill
@@ -41,6 +41,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         init() {
             player.delegate = self
             player._nativePlayer.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+            player._nativePlayer.appliesMediaSelectionCriteriaAutomatically = true
         }
         
         var onCue: ((HMSHLSCue)->Void)?
@@ -102,9 +103,9 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
             if let url = url {
                 videoView(url: url)
             }
-            else if let url = roomModel.hlsVariants.first?.url {
-                videoView(url: url)
-            }
+//            else if let url = roomModel.hlsVariants.first?.url {
+                videoView(url: URL(string: "https://storage.googleapis.com/gcp-asia-south1-qa-in2-recording/610c177655daa6cd3eb5719c/610c177655daa6cd3eb5719d/65290f115530be53a941f52f/room-vod/20231111/654f6002fe99d1a95955e608/master3.m3u8")!)
+//            }
 #else
             if let url = URL(string: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8") {
                 videoView(url: url)

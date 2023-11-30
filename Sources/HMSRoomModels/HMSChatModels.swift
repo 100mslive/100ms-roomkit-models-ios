@@ -41,7 +41,7 @@ import HMSSDK
 public enum HMSRecipient: Equatable {
     case everyone
     case role(HMSRole)
-    case peer(HMSPeerModel?)
+    case peer(HMSPeerModel)
     
     public func toString() -> String {
         switch self {
@@ -51,7 +51,7 @@ public enum HMSRecipient: Equatable {
         case .role(let role):
             return role.name.capitalized
         case .peer(let peer):
-            return peer?.name ?? "Choose Participant"
+            return peer.name
         }
     }
 }
