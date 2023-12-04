@@ -62,12 +62,8 @@ public class HMSRoomModel: ObservableObject {
     }
     @Published public var isReconnecting = false
     @Published public var isBeingStreamed: Bool = false
-#if !Preview
     @Published public var messages = [HMSMessage]()
     @Published public var serviceMessages = [HMSMessage]()
-#else
-    @Published public var messages = [HMSMessageModel]()
-#endif
     
     // Room states
     @Published public var peerCount: Int? = nil
@@ -240,19 +236,19 @@ public class HMSRoomModel: ObservableObject {
         }
     }
     
-    @Published public var roles = [HMSRole]()
+    
     
 #else
-    @Published public var roles = [PreviewRoleModel]()
     public init(){
         sharedSessionStore = HMSSharedSessionStore()
-        roomCode = nil
+        roomCode = "nil-some-code"
         providedToken = nil
         sdk = .build()
         options = nil
         userName = ""
     }
 #endif
+    @Published public var roles = [HMSRole]()
 }
 
 #if !Preview
