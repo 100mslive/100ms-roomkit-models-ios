@@ -274,6 +274,21 @@ extension HMSRoomModel {
 #endif
     }
     
+    public func send(hlsMetadata: [HMSHLSTimedMetadata]) async throws {
+#if !Preview
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.sendHLSTimedMetadata(hlsMetadata) { success, error in
+                if let error = error {
+                    continuation.resume(throwing: error);
+                }
+                else {
+                    continuation.resume()
+                }
+            }
+        }
+#endif
+    }
+    
 
     public func switchAudioOutput(to device: HMSAudioOutputDevice) throws {
 #if !Preview
