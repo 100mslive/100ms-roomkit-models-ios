@@ -122,7 +122,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
     }
     
     public func onCue(cue: @escaping (HMSHLSCue)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(videoOverlay: videoOverlay!)
+        var newView = HMSHLSPlayerView(url: url, videoOverlay: videoOverlay!)
         setupNewView(newView: &newView)
         newView.onCue = { value in
             cue(value)
@@ -130,7 +130,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         return newView
     }
     public func onPlaybackFailure(error: @escaping (Error)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(videoOverlay: videoOverlay!)
+        var newView = HMSHLSPlayerView(url: url, videoOverlay: videoOverlay!)
         setupNewView(newView: &newView)
         newView.onPlaybackFailure = { value in
             error(value)
@@ -138,7 +138,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         return newView
     }
     public func onPlaybackStateChanged(state: @escaping (HMSHLSPlaybackState)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(videoOverlay: videoOverlay!)
+        var newView = HMSHLSPlayerView(url: url, videoOverlay: videoOverlay!)
         setupNewView(newView: &newView)
         newView.onPlaybackStateChanged = { value in
             state(value)
@@ -146,7 +146,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         return newView
     }
     public func onResolutionChanged(videoSize: @escaping (CGSize)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(videoOverlay: videoOverlay!)
+        var newView = HMSHLSPlayerView(url: url, videoOverlay: videoOverlay!)
         setupNewView(newView: &newView)
         newView.onResolutionChanged = { value in
             videoSize(value)
@@ -170,7 +170,7 @@ extension HMSHLSPlayerView where VideoOverlay == EmptyView {
     }
     
     public func onCue(cue: @escaping (HMSHLSCue)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView()
+        var newView = HMSHLSPlayerView(url: url)
         setupNewView(newView: &newView)
         newView.onCue = { value in
             cue(value)
@@ -178,7 +178,7 @@ extension HMSHLSPlayerView where VideoOverlay == EmptyView {
         return newView
     }
     public func onPlaybackFailure(error: @escaping (Error)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView()
+        var newView = HMSHLSPlayerView(url: url)
         setupNewView(newView: &newView)
         newView.onPlaybackFailure = { value in
             error(value)
@@ -186,7 +186,7 @@ extension HMSHLSPlayerView where VideoOverlay == EmptyView {
         return newView
     }
     public func onPlaybackStateChanged(state: @escaping (HMSHLSPlaybackState)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView()
+        var newView = HMSHLSPlayerView(url: url)
         setupNewView(newView: &newView)
         newView.onPlaybackStateChanged = { value in
             state(value)
@@ -194,7 +194,7 @@ extension HMSHLSPlayerView where VideoOverlay == EmptyView {
         return newView
     }
     public func onResolutionChanged(videoSize: @escaping (CGSize)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView()
+        var newView = HMSHLSPlayerView(url: url)
         setupNewView(newView: &newView)
         newView.onResolutionChanged = { value in
             videoSize(value)
