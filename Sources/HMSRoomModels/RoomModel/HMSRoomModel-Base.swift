@@ -39,9 +39,5 @@ extension HMSRoomModel {
         
         return localTrackModels[index]
     }
-    
-    public var isUserHLSViewer: Bool {
-        userRole?.name.hasPrefix("hls-") ?? false
-    }
     #endif
 }

@@ -17,10 +17,6 @@ extension HMSRoomModel {
     public var localVideoTrackModel: HMSTrackModel? { HMSTrackModel() }
     public var localAudioTrackModel: HMSTrackModel? { HMSTrackModel() }
     
-    public var isUserHLSViewer: Bool {
-        false
-    }
-    
     public enum AdditionalPeers {
         case screen
         case prominent
