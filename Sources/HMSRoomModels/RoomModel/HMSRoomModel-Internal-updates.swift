@@ -57,6 +57,7 @@ extension HMSRoomModel {
     
     func updateLocalRole() {
 #if !Preview
+        userPreviousRole = userRole
         userRole = localPeerModel?.role
         #endif
     }

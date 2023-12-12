@@ -54,6 +54,7 @@ public class HMSRoomModel: ObservableObject {
     @Published public var isUserSharingScreen: Bool = false
     @Published public var userCanEndRoom: Bool = false
     @Published public var userRole: HMSRole?
+    @Published public var userPreviousRole: HMSRole?
     
     // Meeting experience states
     @Published public var errors = [Error]()
