@@ -514,17 +514,27 @@ extension HMSRoomModel {
         return iterator
     }
     
-    public func fetchPeer(with id: String) async throws -> HMSPeerModel {
+    public func fetchPeer(with id: String) async throws -> HMSPeerModel? {
         
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            _ = HMSPeerListIteratorModel(iterator: sdk.getPeerListIterator(options: HMSPeerListIteratorOptions(filterByPeerIds: [id], limit: 1))) { [weak self] inPeer in
-    #if !Preview
-                return HMSPeerModel(peer: inPeer, roomModel: self)
-    #else
-                return HMSPeerModel()
-    #endif
-            }
+        let iterator = HMSPeerListIteratorModel(iterator: sdk.getPeerListIterator(options: HMSPeerListIteratorOptions(filterByPeerIds: [id], limit: 1))) { [weak self] inPeer in
+#if !Preview
+            return HMSPeerModel(peer: inPeer, roomModel: self)
+#else
+            return HMSPeerModel()
+#endif
+        }
+        let peers = try await iterator.loadNextSetOfPeers()
+        if let peer = peers.first {
+#if !Preview
+            let peerModel = HMSPeerModel(peer: peer, roomModel: self)
+#else
+            let peerModel = HMSPeerModel()
+#endif
+            peerModel.isTemporary = true
+            return peerModel
+        }
+        else {
+            return nil
         }
     }
     
