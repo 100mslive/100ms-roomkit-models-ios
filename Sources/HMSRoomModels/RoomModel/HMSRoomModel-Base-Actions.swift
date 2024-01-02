@@ -523,10 +523,11 @@ extension HMSRoomModel {
             return HMSPeerModel()
 #endif
         }
-        let peers = try await iterator.loadNextSetOfPeers()
+        try await iterator.loadNextSetOfPeers()
+        let peers = iterator.peers
         if let peer = peers.first {
 #if !Preview
-            let peerModel = HMSPeerModel(peer: peer, roomModel: self)
+            let peerModel = HMSPeerModel(peer: peer.peer, roomModel: self)
 #else
             let peerModel = HMSPeerModel()
 #endif

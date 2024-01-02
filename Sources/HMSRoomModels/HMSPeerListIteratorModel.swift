@@ -42,7 +42,7 @@ public final class HMSPeerListIteratorModel: ObservableObject {
         currentIDs.formUnion(newIDs)
     }
     
-    public func loadNextSetOfPeers() async throws -> [HMSPeer] {
+    public func loadNextSetOfPeers() async throws {
         isLoadingPeers = true
         return try await withCheckedThrowingContinuation { continuation in
             iterator.next() { [weak self] newPeers, error in
@@ -55,7 +55,7 @@ public final class HMSPeerListIteratorModel: ObservableObject {
                     self.hasMorePeers = iterator.hasNext
                     self.totalPeerCount = iterator.totalCount
                     self.isLoadingPeers = false
-                    continuation.resume(returning: newPeers ?? [])
+                    continuation.resume()
                 }
             }
         }
