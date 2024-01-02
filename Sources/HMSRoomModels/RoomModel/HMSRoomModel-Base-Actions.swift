@@ -514,6 +514,31 @@ extension HMSRoomModel {
         return iterator
     }
     
+    public func fetchPeer(with id: String) async throws -> HMSPeerModel? {
+        
+        let iterator = HMSPeerListIteratorModel(iterator: sdk.getPeerListIterator(options: HMSPeerListIteratorOptions(filterByPeerIds: [id], limit: 1))) { [weak self] inPeer in
+#if !Preview
+            return HMSPeerModel(peer: inPeer, roomModel: self)
+#else
+            return HMSPeerModel()
+#endif
+        }
+        try await iterator.loadNextSetOfPeers()
+        let peers = iterator.peers
+        if let peer = peers.first {
+#if !Preview
+            let peerModel = HMSPeerModel(peer: peer.peer, roomModel: self)
+#else
+            let peerModel = HMSPeerModel()
+#endif
+            peerModel.isTemporary = true
+            return peerModel
+        }
+        else {
+            return nil
+        }
+    }
+    
     public func beginObserving(keys: [String]) {
         sharedSessionStore.beginObserving(keys: keys)
     }

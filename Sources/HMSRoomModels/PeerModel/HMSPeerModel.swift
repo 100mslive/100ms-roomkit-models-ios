@@ -63,6 +63,7 @@ public class HMSPeerModel: ObservableObject {
     
     @Published public internal(set) var role: HMSRole?
     
+    @Published public internal(set) var isTemporary: Bool = false
     
 #if !Preview
     public let peer: HMSPeer
