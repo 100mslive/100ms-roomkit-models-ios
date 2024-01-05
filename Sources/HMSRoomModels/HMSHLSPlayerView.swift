@@ -116,7 +116,9 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
 
         .onChange(of: roomModel.hlsVariants) { variant in
             if self.url == nil {
-                coordinator.player.play(url)
+                if let url = variant.first?.url {
+                    coordinator.player.play(url)
+                }
             }
         }
     }

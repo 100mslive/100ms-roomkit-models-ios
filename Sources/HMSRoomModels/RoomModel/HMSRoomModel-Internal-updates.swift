@@ -141,7 +141,10 @@ extension HMSRoomModel {
         guard let room = room else { assertionFailure("shouldn't be here"); return }
         
         isBeingStreamed = room.rtmpStreamingState.running || room.hlsStreamingState.running
-        hlsVariants = room.hlsStreamingState.variants
+        
+        if room.rtmpStreamingState.state == .started || room.hlsStreamingState.state == .started {
+            hlsVariants = room.hlsStreamingState.variants
+        }
     }
 }
 
