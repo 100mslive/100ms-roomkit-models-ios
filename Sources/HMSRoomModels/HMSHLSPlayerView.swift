@@ -9,6 +9,7 @@
 import SwiftUI
 import HMSSDK
 import HMSHLSPlayerSDK
+import SwiftUIIntrospect
 
 import AVKit
 
@@ -16,17 +17,6 @@ import AVKit
 class AVPlayerModel {
     static let shared = AVPlayerModel()
     weak var currentAVPlayerInstance: AVPlayerViewController?
-}
-
-extension AVPlayerViewController {
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        self.showsPlaybackControls = false
-        self.allowsPictureInPicturePlayback = false
-        self.canStartPictureInPictureAutomaticallyFromInline = false
-        self.videoGravity = .resizeAspectFill
-        AVPlayerModel.shared.currentAVPlayerInstance = self
-    }
 }
 
 public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
@@ -107,6 +97,13 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         VideoPlayer(player: coordinator.player._nativePlayer, videoOverlay: {
             videoOverlay?(coordinator.player)
         })
+        .introspect(.videoPlayer, on: .iOS(.v14, .v15, .v16, .v17)) {
+            $0.showsPlaybackControls = false
+            $0.allowsPictureInPicturePlayback = false
+            $0.canStartPictureInPictureAutomaticallyFromInline = false
+            $0.videoGravity = .resizeAspectFill
+            AVPlayerModel.shared.currentAVPlayerInstance = $0
+        }
         .onAppear() {
             coordinator.player.play(url)
         }
