@@ -98,34 +98,35 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
     func videoView(url: URL) -> some View {
         GeometryReader { geo in
             
-            ScrollView([.vertical, .horizontal], showsIndicators: false) {
-                VideoPlayer(player: coordinator.player._nativePlayer)
-                    .introspect(.videoPlayer, on: .iOS(.v14, .v15, .v16, .v17)) {
-                        $0.showsPlaybackControls = false
-                        $0.allowsPictureInPicturePlayback = false
-                        $0.canStartPictureInPictureAutomaticallyFromInline = false
-                        AVPlayerModel.shared.currentAVPlayerInstance = $0
-                    }
-                    .frame(width: geo.size.width, height: geo.size.height )
-                    .scaleEffect(scale)
-                    .frame(width: geo.size.width * scale, height: geo.size.height * scale)
-                    .overlay(content: {
-                        Color.black.opacity(0.001)
-                            .gesture(MagnificationGesture().onChanged { val in
-                                let delta = val / self.lastScaleValue
-                                self.lastScaleValue = val
-                                var newScale = self.scale * delta
-                                if newScale < 1.0 {
-                                    newScale =  1.0
-                                }
-                                scale = newScale
-                            }.onEnded{val in
-                                lastScaleValue = 1
-                            })
-                    })
-                    .overlay(content: {
-                        videoOverlay?(coordinator.player)
-                    })
+            ZStack {
+                ScrollView([.vertical, .horizontal], showsIndicators: false) {
+                    VideoPlayer(player: coordinator.player._nativePlayer)
+                        .introspect(.videoPlayer, on: .iOS(.v14, .v15, .v16, .v17)) {
+                            $0.showsPlaybackControls = false
+                            $0.allowsPictureInPicturePlayback = false
+                            $0.canStartPictureInPictureAutomaticallyFromInline = false
+                            AVPlayerModel.shared.currentAVPlayerInstance = $0
+                        }
+                        .frame(width: geo.size.width, height: geo.size.height )
+                        .scaleEffect(scale)
+                        .frame(width: geo.size.width * scale, height: geo.size.height * scale)
+                        .overlay(content: {
+                            Color.black.opacity(0.001)
+                                .gesture(MagnificationGesture().onChanged { val in
+                                    let delta = val / self.lastScaleValue
+                                    self.lastScaleValue = val
+                                    var newScale = self.scale * delta
+                                    if newScale < 1.0 {
+                                        newScale =  1.0
+                                    }
+                                    scale = newScale
+                                }.onEnded{val in
+                                    lastScaleValue = 1
+                                })
+                        })
+                }
+                
+                videoOverlay?(coordinator.player)
             }
         }
         .onAppear() {
