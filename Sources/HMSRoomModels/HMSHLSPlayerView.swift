@@ -16,9 +16,11 @@ import AVKit
 public struct HMSHLSPreferences {
 
     public var isControlsHidden = false
+    public var resetHideTask: (() -> Void)?
     
-    public init(isControlsHidden: Bool = false) {
+    public init(isControlsHidden: Bool = false, resetHideTask: (() -> Void)? = nil) {
         self.isControlsHidden = isControlsHidden
+        self.resetHideTask = resetHideTask
     }
     
     struct Key: EnvironmentKey {
@@ -140,6 +142,30 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                                 hlsPlayerPreferences.isControlsHidden.wrappedValue = true
                             }
                             hideTasks.append(task)
+                            
+                            hlsPlayerPreferences.resetHideTask.wrappedValue = {
+                                hideTasks.forEach{$0.cancel()}
+                                hideTasks.removeAll()
+                                
+                                let task = Task {
+                                    try await Task.sleep(nanoseconds: 3_000_000_000)
+                                    hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+                                }
+                                hideTasks.append(task)
+                            }
+                        }
+                        .onChange(of: hlsPlayerPreferences.isControlsHidden.wrappedValue) { isControlsHidden in
+                            
+                            hideTasks.forEach{$0.cancel()}
+                            hideTasks.removeAll()
+                            
+                            if !isControlsHidden {
+                                let task = Task {
+                                    try await Task.sleep(nanoseconds: 3_000_000_000)
+                                    hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+                                }
+                                hideTasks.append(task)
+                            }
                         }
                         .overlay(content: {
                             Color.black.opacity(0.001)
