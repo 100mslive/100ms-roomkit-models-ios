@@ -13,6 +13,27 @@ import SwiftUIIntrospect
 
 import AVKit
 
+public struct HMSHLSPreferences {
+
+    public var isControlsHidden = false
+    
+    public init(isControlsHidden: Bool = false) {
+        self.isControlsHidden = isControlsHidden
+    }
+    
+    struct Key: EnvironmentKey {
+        static let defaultValue: Binding<HMSHLSPreferences> = .constant(.init(isControlsHidden: false))
+    }
+}
+
+public extension EnvironmentValues {
+    
+    var hlsPlayerPreferences: Binding<HMSHLSPreferences> {
+        get { self[HMSHLSPreferences.Key.self] }
+        set { self[HMSHLSPreferences.Key.self] = newValue }
+    }
+}
+
 @MainActor
 class AVPlayerModel {
     static let shared = AVPlayerModel()
@@ -57,6 +78,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         }
     }
     
+    @Environment(\.hlsPlayerPreferences) var hlsPlayerPreferences
     @EnvironmentObject var roomModel: HMSRoomModel
     
     @StateObject var coordinator = Coordinator()
@@ -70,6 +92,8 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
     
     @State private var scale: CGFloat = 1.0
     @State private var lastScaleValue: CGFloat = 1.0
+    
+    @State var hideTasks = [Task<(), any Error>]()
     
     @ViewBuilder let videoOverlay: ((HMSHLSPlayer) -> VideoOverlay)?
     public init(url: URL? = nil, @ViewBuilder videoOverlay: @escaping (HMSHLSPlayer) -> VideoOverlay) {
@@ -110,8 +134,30 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                         .frame(width: geo.size.width, height: geo.size.height )
                         .scaleEffect(scale)
                         .frame(width: geo.size.width * scale, height: geo.size.height * scale)
+                        .onAppear() {
+                            let task = Task {
+                                try await Task.sleep(nanoseconds: 3_000_000_000)
+                                hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+                            }
+                            hideTasks.append(task)
+                        }
                         .overlay(content: {
                             Color.black.opacity(0.001)
+                                .onTapGesture {
+                                    hlsPlayerPreferences.isControlsHidden.wrappedValue.toggle()
+                                    
+                                    if !hlsPlayerPreferences.isControlsHidden.wrappedValue {
+                                        let task = Task {
+                                            try await Task.sleep(nanoseconds: 3_000_000_000)
+                                            hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+                                        }
+                                        hideTasks.append(task)
+                                    }
+                                    else {
+                                        hideTasks.forEach{$0.cancel()}
+                                        hideTasks.removeAll()
+                                    }
+                                }
                                 .gesture(MagnificationGesture().onChanged { val in
                                     let delta = val / self.lastScaleValue
                                     self.lastScaleValue = val
