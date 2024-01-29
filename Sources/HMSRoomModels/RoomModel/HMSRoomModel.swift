@@ -36,10 +36,6 @@ public class HMSRoomModel: ObservableObject {
     internal var joinCancellable: AnyCancellable?
     internal var previewCancellable: AnyCancellable?
     
-    deinit {
-        print("pawan: deinit")
-    }
-    
     // Peer states
     @Published public var peerModels = [HMSPeerModel]()
     @Published public var peersSharingScreen = [HMSPeerModel]()
