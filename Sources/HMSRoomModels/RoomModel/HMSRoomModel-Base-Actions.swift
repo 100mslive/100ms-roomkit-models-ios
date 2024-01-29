@@ -87,6 +87,10 @@ extension HMSRoomModel {
             self.userName = userName
         }
         
+        if self.userName.isEmpty {
+            self.userName = UUID().uuidString
+        }
+        
         // if providedToken is nil our init constrain makes roomCode non-nil
         let authToken = providedToken != nil ? providedToken! : try await getAuthToken(roomCode: roomCode!)
         
