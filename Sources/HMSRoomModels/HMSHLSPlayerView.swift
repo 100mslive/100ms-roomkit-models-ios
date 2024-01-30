@@ -183,6 +183,9 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                                         hideTasks.forEach{$0.cancel()}
                                         hideTasks.removeAll()
                                     }
+                                    
+                                    // hide keyboard it it's present
+                                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                 }
                                 .gesture(MagnificationGesture().onChanged { val in
                                     let delta = val / self.lastScaleValue
