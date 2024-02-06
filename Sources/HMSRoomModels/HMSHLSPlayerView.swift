@@ -128,21 +128,12 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         GeometryReader { geo in
             
             ZStack {
-                VideoPlayer(player: coordinator.player._nativePlayer)
-                    .introspect(.videoPlayer, on: .iOS(.v14, .v15, .v16, .v17)) {
-                        $0.showsPlaybackControls = false
-                        $0.allowsPictureInPicturePlayback = false
-                        $0.canStartPictureInPictureAutomaticallyFromInline = false
-                        AVPlayerModel.shared.currentAVPlayerInstance = $0
-                    }
+                HMSHLSViewRepresentable(player: coordinator.player)
                     .frame(width: geo.size.width, height: geo.size.height )
-                    .scaleEffect(scale)
-                    .frame(width: geo.size.width * scale, height: geo.size.height * scale)
-                    .offset(x: currentOffset.width + dragOffset.width, y: currentOffset.height + dragOffset.height)
                     .onAppear() {
                         let task = Task {
                             try await Task.sleep(nanoseconds: 3_000_000_000)
-                            hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+                            hlsPlayerPreferences.isControlsHidden.wrappedValue = false
                         }
                         hideTasks.append(task)
                         
@@ -152,7 +143,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                             
                             let task = Task {
                                 try await Task.sleep(nanoseconds: 3_000_000_000)
-                                hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+                                hlsPlayerPreferences.isControlsHidden.wrappedValue = false
                             }
                             hideTasks.append(task)
                         }
@@ -165,65 +156,32 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                         if !isControlsHidden {
                             let task = Task {
                                 try await Task.sleep(nanoseconds: 3_000_000_000)
-                                hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+                                hlsPlayerPreferences.isControlsHidden.wrappedValue = false
                             }
                             hideTasks.append(task)
                         }
                     }
-                    .overlay(content: {
-                        Color.black.opacity(0.001)
-                            .onTapGesture {
-                                hlsPlayerPreferences.isControlsHidden.wrappedValue.toggle()
-                                
-                                if !hlsPlayerPreferences.isControlsHidden.wrappedValue {
-                                    let task = Task {
-                                        try await Task.sleep(nanoseconds: 3_000_000_000)
-                                        hlsPlayerPreferences.isControlsHidden.wrappedValue = true
-                                    }
-                                    hideTasks.append(task)
-                                }
-                                else {
-                                    hideTasks.forEach{$0.cancel()}
-                                    hideTasks.removeAll()
-                                }
-                                
-                                // hide keyboard it it's present
-                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                            }
-                            .gesture(MagnificationGesture().onChanged { val in
-                                let delta = val / self.lastScaleValue
-                                self.lastScaleValue = val
-                                var newScale = self.scale * delta
-                                if newScale < 1.0 {
-                                    newScale =  1.0
-                                }
-                                scale = newScale
-
-                                dragChanged(value: nil, geo: geo)
-                            }.onEnded{val in
-                                lastScaleValue = 1
-                            })
-                            .simultaneousGesture(
-                                DragGesture()
-                                    .onChanged { value in
-                                        
-                                        dragChanged(value: value, geo: geo)
-                                    }
-                                    .onEnded { value in
-                                        
-                                        let maxDragDistanceX = geo.size.width * scale - geo.size.width
-                                        let maxDragDistanceY = geo.size.height * scale - geo.size.height
-                                        
-                                        // Update the current offset within constraints and reset drag offset
-                                        currentOffset.width = max(min(currentOffset.width + dragOffset.width, maxDragDistanceX), -maxDragDistanceX)
-                                        currentOffset.height = max(min(currentOffset.height + dragOffset.height, maxDragDistanceY), -maxDragDistanceY)
-                                        
-                                        dragOffset = CGSize.zero
-                                    }
-                            )
-                    })
-                
-                
+//                    .overlay(content: {
+//                        Color.red.opacity(0.1)
+//                            .onTapGesture {
+//                                hlsPlayerPreferences.isControlsHidden.wrappedValue.toggle()
+//                                
+//                                if !hlsPlayerPreferences.isControlsHidden.wrappedValue {
+//                                    let task = Task {
+//                                        try await Task.sleep(nanoseconds: 3_000_000_000)
+//                                        hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+//                                    }
+//                                    hideTasks.append(task)
+//                                }
+//                                else {
+//                                    hideTasks.forEach{$0.cancel()}
+//                                    hideTasks.removeAll()
+//                                }
+//                                
+//                                // hide keyboard it it's present
+//                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+//                            }
+//                    })
             }
         }
         .overlay(content: {
@@ -355,5 +313,68 @@ struct HMSHLSPlayerView_Previews: PreviewProvider {
         HMSHLSPlayerView()
             .environmentObject(HMSUITheme())
 #endif
+    }
+}
+
+internal struct HMSHLSViewRepresentable: UIViewRepresentable {
+    let player: HMSHLSPlayer
+    
+    init(player: HMSHLSPlayer) {
+        self.player = player
+    }
+
+    func makeUIView(context: Context) -> UIView {
+        
+        let videoViewController = player.videoPlayerViewController(showsPlayerControls: false)
+        videoViewController.disableGestureRecognition()
+
+        context.coordinator.panAndZoomController = HMSPanAndZoomController(targetView: videoViewController.view)
+        context.coordinator.panAndZoomController?.isZoomAndPanEnabled = true
+        
+        videoViewController.showsPlaybackControls = false
+        videoViewController.allowsPictureInPicturePlayback = false
+        videoViewController.canStartPictureInPictureAutomaticallyFromInline = false
+        
+        AVPlayerModel.shared.currentAVPlayerInstance = videoViewController
+        
+        return videoViewController.view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {}
+    
+    static func dismantleUIView(_ uiView: UIView, coordinator: Coordinator) {
+        coordinator.panAndZoomController?.isZoomAndPanEnabled = false
+        coordinator.panAndZoomController = nil
+    }
+    
+    class Coordinator: NSObject {
+        var parent: HMSHLSViewRepresentable
+        var panAndZoomController: HMSPanAndZoomController?
+        
+        init(_ parent: HMSHLSViewRepresentable) {
+            self.parent = parent
+        }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+}
+
+extension AVPlayerViewController {
+    func disableGestureRecognition() {
+        let contentView = view.value(forKey: "contentView") as? UIView
+        contentView?.gestureRecognizers = contentView?.gestureRecognizers?.filter { $0 is UITapGestureRecognizer }
+    }
+}
+
+extension UIView {
+    func addConstrained(subview: UIView) {
+        addSubview(subview)
+        subview.translatesAutoresizingMaskIntoConstraints = false
+        subview.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        subview.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        subview.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        subview.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
 }
