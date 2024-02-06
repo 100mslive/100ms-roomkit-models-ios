@@ -125,16 +125,47 @@ internal extension HMSPanAndZoomController {
         
         switch sender.state {
         case .changed:
-            if self.isZoomed {
-                let translation = sender.translation(in: targetView)
-                
-                if let view = sender.view {
-                    view.center = CGPoint(x: view.center.x + translation.x * currentScale, y: view.center.y + translation.y * currentScale)
-                }
-                sender.setTranslation(CGPoint.zero, in: targetView)
-            }
+            guard let parentView = targetView?.superview else { return }
+            let translation = sender.translation(in: parentView)
+            pan(translation: translation)
+            // Reset the gesture's translation to 0 after applying the transformation
+            sender.setTranslation(CGPoint.zero, in: parentView)
         default:
             break
+        }
+    }
+    
+    func pan(translation: CGPoint) {
+        
+        guard let parentView = targetView?.superview else { return }
+        
+        if self.isZoomed, let targetView = self.targetView {
+            
+            // Current scale from the transform (assuming uniform scaling)
+            let scale = targetView.transform.a
+            
+            // Calculate the bounds based on the zoomed dimensions
+            let scaledWidth = targetView.bounds.width * scale
+            let scaledHeight = targetView.bounds.height * scale
+            
+            // The maximum allowed translation considering the parent's dimensions
+            let maxX = max(0, (scaledWidth - parentView.bounds.width) / 2)
+            let maxY = max(0, (scaledHeight - parentView.bounds.height) / 2)
+            
+            // Current translations
+            let currentTx = targetView.transform.tx
+            let currentTy = targetView.transform.ty
+            
+            // Calculate new translation within the bounds
+            var newTx = currentTx + translation.x
+            var newTy = currentTy + translation.y
+            
+            // Adjust the translation to prevent panning beyond the zoomed view's bounds
+            newTx = min(max(newTx, -maxX), maxX)
+            newTy = min(max(newTy, -maxY), maxY)
+            
+            // Apply the corrected translation
+            targetView.transform = CGAffineTransform(translationX: newTx, y: newTy).scaledBy(x: scale, y: scale)
         }
     }
     
@@ -165,6 +196,8 @@ internal extension HMSPanAndZoomController {
             } else {
                 view.transform = transform
                 sender.scale = 1
+
+                pan(translation: .zero)
             }
             
         case .ended, .failed, .cancelled:
