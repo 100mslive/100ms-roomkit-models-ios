@@ -128,7 +128,24 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         GeometryReader { geo in
             
             ZStack {
-                HMSHLSViewRepresentable(player: coordinator.player)
+                HMSHLSViewRepresentable(player: coordinator.player, tapBlock: {
+                    hlsPlayerPreferences.isControlsHidden.wrappedValue.toggle()
+                    
+                    if !hlsPlayerPreferences.isControlsHidden.wrappedValue {
+                        let task = Task {
+                            try await Task.sleep(nanoseconds: 3_000_000_000)
+                            hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+                        }
+                        hideTasks.append(task)
+                    }
+                    else {
+                        hideTasks.forEach{$0.cancel()}
+                        hideTasks.removeAll()
+                    }
+                    
+                    // hide keyboard it it's present
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                })
                     .frame(width: geo.size.width, height: geo.size.height )
                     .onAppear() {
                         let task = Task {
@@ -161,27 +178,6 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                             hideTasks.append(task)
                         }
                     }
-//                    .overlay(content: {
-//                        Color.red.opacity(0.1)
-//                            .onTapGesture {
-//                                hlsPlayerPreferences.isControlsHidden.wrappedValue.toggle()
-//                                
-//                                if !hlsPlayerPreferences.isControlsHidden.wrappedValue {
-//                                    let task = Task {
-//                                        try await Task.sleep(nanoseconds: 3_000_000_000)
-//                                        hlsPlayerPreferences.isControlsHidden.wrappedValue = true
-//                                    }
-//                                    hideTasks.append(task)
-//                                }
-//                                else {
-//                                    hideTasks.forEach{$0.cancel()}
-//                                    hideTasks.removeAll()
-//                                }
-//                                
-//                                // hide keyboard it it's present
-//                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-//                            }
-//                    })
             }
         }
         .overlay(content: {
@@ -318,9 +314,11 @@ struct HMSHLSPlayerView_Previews: PreviewProvider {
 
 internal struct HMSHLSViewRepresentable: UIViewRepresentable {
     let player: HMSHLSPlayer
+    let tapBlock: (() -> Void)?
     
-    init(player: HMSHLSPlayer) {
+    init(player: HMSHLSPlayer, tapBlock: (() -> Void)?) {
         self.player = player
+        self.tapBlock = tapBlock
     }
 
     func makeUIView(context: Context) -> UIView {
@@ -328,7 +326,9 @@ internal struct HMSHLSViewRepresentable: UIViewRepresentable {
         let videoViewController = player.videoPlayerViewController(showsPlayerControls: false)
         videoViewController.disableGestureRecognition()
 
-        context.coordinator.panAndZoomController = HMSPanAndZoomController(targetView: videoViewController.view)
+        context.coordinator.panAndZoomController = HMSPanAndZoomController(targetView: videoViewController.view, tapBlock: {
+            tapBlock?()
+        })
         context.coordinator.panAndZoomController?.isZoomAndPanEnabled = true
         
         videoViewController.showsPlaybackControls = false

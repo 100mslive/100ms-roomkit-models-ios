@@ -29,13 +29,16 @@ import UIKit
     
     private var pinchGesture: UIPinchGestureRecognizer!
     private var panGesture: UIPanGestureRecognizer!
+    private var tapGesture: UITapGestureRecognizer!
     
     private static func isMetalAvailable() -> Bool {
         return MTLCreateSystemDefaultDevice() != nil
     }
     
     let parentView: UIView
-    internal init(targetView: UIView) {
+    let tapBlock: (() -> Void)?
+    internal init(targetView: UIView, tapBlock: (() -> Void)?) {
+        self.tapBlock = tapBlock
         self.targetView = targetView
         
         parentView = UIView(frame: targetView.frame)
@@ -56,14 +59,18 @@ import UIKit
         pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinch(sender:)))
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(pan(sender:)))
         
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(sender:)))
+        
         panGesture.delegate = self;
         pinchGesture.delegate = self;
         
         targetView.addGestureRecognizer(pinchGesture)
         targetView.addGestureRecognizer(panGesture)
+        targetView.addGestureRecognizer(tapGesture)
         
         panGesture.isEnabled = false
         pinchGesture.isEnabled = false
+        tapGesture.isEnabled = tapBlock != nil
         
         NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) {[weak self] _ in
             
@@ -103,6 +110,16 @@ extension HMSPanAndZoomController: UIGestureRecognizerDelegate {
 }
 
 internal extension HMSPanAndZoomController {
+    
+    func tap(sender: UITapGestureRecognizer) {
+        
+        switch sender.state {
+        case .ended:
+            tapBlock?()
+        default:
+            break
+        }
+    }
     
     func pan(sender: UIPanGestureRecognizer) {
         
