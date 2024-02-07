@@ -156,7 +156,6 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                         hlsPlayerPreferences.resetHideTask.wrappedValue = {
                             hideTasks.forEach{$0.cancel()}
                             hideTasks.removeAll()
-
                             hideTasks.append(hideControlsTask)
                         }
                     }
@@ -166,7 +165,6 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                         hideTasks.removeAll()
                         
                         if !isControlsHidden {
-                            
                             hideTasks.append(hideControlsTask)
                         }
                     }
