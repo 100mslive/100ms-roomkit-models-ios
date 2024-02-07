@@ -100,6 +100,14 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
     @State private var dragOffset = CGSize.zero // Offset while dragging
     
     @ViewBuilder let videoOverlay: ((HMSHLSPlayer) -> VideoOverlay)?
+    
+    var hideControlsTask: Task<(), any Error> {
+        Task {
+            try await Task.sleep(nanoseconds: 3_000_000_000)
+            hlsPlayerPreferences.isControlsHidden.wrappedValue = true
+        }
+    }
+    
     public init(url: URL? = nil, @ViewBuilder videoOverlay: @escaping (HMSHLSPlayer) -> VideoOverlay) {
         self.videoOverlay = videoOverlay
         self.url = url
@@ -131,11 +139,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                     hlsPlayerPreferences.isControlsHidden.wrappedValue.toggle()
                     
                     if !hlsPlayerPreferences.isControlsHidden.wrappedValue {
-                        let task = Task {
-                            try await Task.sleep(nanoseconds: 3_000_000_000)
-                            hlsPlayerPreferences.isControlsHidden.wrappedValue = true
-                        }
-                        hideTasks.append(task)
+                        hideTasks.append(hideControlsTask)
                     }
                     else {
                         hideTasks.forEach{$0.cancel()}
@@ -147,21 +151,13 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                 })
                     .frame(width: geo.size.width, height: geo.size.height )
                     .onAppear() {
-                        let task = Task {
-                            try await Task.sleep(nanoseconds: 3_000_000_000)
-                            hlsPlayerPreferences.isControlsHidden.wrappedValue = false
-                        }
-                        hideTasks.append(task)
+                        hideTasks.append(hideControlsTask)
                         
                         hlsPlayerPreferences.resetHideTask.wrappedValue = {
                             hideTasks.forEach{$0.cancel()}
                             hideTasks.removeAll()
-                            
-                            let task = Task {
-                                try await Task.sleep(nanoseconds: 3_000_000_000)
-                                hlsPlayerPreferences.isControlsHidden.wrappedValue = false
-                            }
-                            hideTasks.append(task)
+
+                            hideTasks.append(hideControlsTask)
                         }
                     }
                     .onChange(of: hlsPlayerPreferences.isControlsHidden.wrappedValue) { isControlsHidden in
@@ -170,11 +166,8 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                         hideTasks.removeAll()
                         
                         if !isControlsHidden {
-                            let task = Task {
-                                try await Task.sleep(nanoseconds: 3_000_000_000)
-                                hlsPlayerPreferences.isControlsHidden.wrappedValue = false
-                            }
-                            hideTasks.append(task)
+                            
+                            hideTasks.append(hideControlsTask)
                         }
                     }
             }
