@@ -12,29 +12,6 @@ import HMSHLSPlayerSDK
 
 import AVKit
 
-public struct HMSHLSPreferences {
-    
-    public var isControlsHidden = false
-    public var resetHideTask: (() -> Void)?
-    
-    public init(isControlsHidden: Bool = false, resetHideTask: (() -> Void)? = nil) {
-        self.isControlsHidden = isControlsHidden
-        self.resetHideTask = resetHideTask
-    }
-    
-    struct Key: EnvironmentKey {
-        static let defaultValue: Binding<HMSHLSPreferences> = .constant(.init(isControlsHidden: false))
-    }
-}
-
-public extension EnvironmentValues {
-    
-    var hlsPlayerPreferences: Binding<HMSHLSPreferences> {
-        get { self[HMSHLSPreferences.Key.self] }
-        set { self[HMSHLSPreferences.Key.self] = newValue }
-    }
-}
-
 @MainActor
 class AVPlayerModel {
     static let shared = AVPlayerModel()
@@ -108,9 +85,10 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         }
     }
     
-    public init(url: URL? = nil, @ViewBuilder videoOverlay: @escaping (HMSHLSPlayer) -> VideoOverlay) {
+    public init(url: URL? = nil, resetGesture: Binding<Bool>, @ViewBuilder videoOverlay: @escaping (HMSHLSPlayer) -> VideoOverlay) {
         self.videoOverlay = videoOverlay
         self.url = url
+        _resetGesture = resetGesture
     }
     
     public var body: some View {
@@ -131,6 +109,8 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         }
     }
     
+    @Binding var resetGesture: Bool
+    
     func videoView(url: URL) -> some View {
         GeometryReader { geo in
             
@@ -148,7 +128,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                     
                     // hide keyboard it it's present
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                })
+                }, resetGesture: $resetGesture)
                     .frame(width: geo.size.width, height: geo.size.height )
                     .onAppear() {
                         hideTasks.append(hideControlsTask)
@@ -189,30 +169,8 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         }
     }
     
-    private func dragChanged(value: DragGesture.Value?, geo: GeometryProxy) {
-        
-        let maxDragDistanceX = geo.size.width * scale - geo.size.width
-        let maxDragDistanceY = geo.size.height * scale - geo.size.height
-        
-        // Calculate and constrain the drag offset
-        let dragX = max(min((value?.translation.width ?? 0) + currentOffset.width, maxDragDistanceX), -maxDragDistanceX)
-        let dragY = max(min((value?.translation.height ?? 0) + currentOffset.height, maxDragDistanceY), -maxDragDistanceY)
-        
-        var x = dragX - currentOffset.width
-        var y = dragY - currentOffset.height
-        
-        if currentOffset.width + x > 0 {
-            x = self.dragOffset.width
-        }
-        if currentOffset.height + y > 0 {
-            y = self.dragOffset.height
-        }
-        
-        self.dragOffset = CGSize(width: x, height: y)
-    }
-    
     public func onCue(cue: @escaping (HMSHLSCue)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(url: url, videoOverlay: videoOverlay!)
+        var newView = HMSHLSPlayerView(url: url, resetGesture: $resetGesture, videoOverlay: videoOverlay!)
         setupNewView(newView: &newView)
         newView.onCue = { value in
             cue(value)
@@ -220,7 +178,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         return newView
     }
     public func onPlaybackFailure(error: @escaping (Error)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(url: url, videoOverlay: videoOverlay!)
+        var newView = HMSHLSPlayerView(url: url, resetGesture: $resetGesture, videoOverlay: videoOverlay!)
         setupNewView(newView: &newView)
         newView.onPlaybackFailure = { value in
             error(value)
@@ -228,7 +186,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         return newView
     }
     public func onPlaybackStateChanged(state: @escaping (HMSHLSPlaybackState)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(url: url, videoOverlay: videoOverlay!)
+        var newView = HMSHLSPlayerView(url: url, resetGesture: $resetGesture, videoOverlay: videoOverlay!)
         setupNewView(newView: &newView)
         newView.onPlaybackStateChanged = { value in
             state(value)
@@ -236,7 +194,7 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         return newView
     }
     public func onResolutionChanged(videoSize: @escaping (CGSize)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(url: url, videoOverlay: videoOverlay!)
+        var newView = HMSHLSPlayerView(url: url, resetGesture: $resetGesture, videoOverlay: videoOverlay!)
         setupNewView(newView: &newView)
         newView.onResolutionChanged = { value in
             videoSize(value)
@@ -254,13 +212,14 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
 }
 
 extension HMSHLSPlayerView where VideoOverlay == EmptyView {
-    public init(url: URL? = nil) {
+    public init(url: URL? = nil, resetGesture: Binding<Bool>) {
         videoOverlay = nil
         self.url = url
+        _resetGesture = resetGesture
     }
     
     public func onCue(cue: @escaping (HMSHLSCue)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(url: url)
+        var newView = HMSHLSPlayerView(url: url, resetGesture: $resetGesture)
         setupNewView(newView: &newView)
         newView.onCue = { value in
             cue(value)
@@ -268,7 +227,7 @@ extension HMSHLSPlayerView where VideoOverlay == EmptyView {
         return newView
     }
     public func onPlaybackFailure(error: @escaping (Error)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(url: url)
+        var newView = HMSHLSPlayerView(url: url, resetGesture: $resetGesture)
         setupNewView(newView: &newView)
         newView.onPlaybackFailure = { value in
             error(value)
@@ -276,7 +235,7 @@ extension HMSHLSPlayerView where VideoOverlay == EmptyView {
         return newView
     }
     public func onPlaybackStateChanged(state: @escaping (HMSHLSPlaybackState)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(url: url)
+        var newView = HMSHLSPlayerView(url: url, resetGesture: $resetGesture)
         setupNewView(newView: &newView)
         newView.onPlaybackStateChanged = { value in
             state(value)
@@ -284,7 +243,7 @@ extension HMSHLSPlayerView where VideoOverlay == EmptyView {
         return newView
     }
     public func onResolutionChanged(videoSize: @escaping (CGSize)->Void) -> HMSHLSPlayerView {
-        var newView = HMSHLSPlayerView(url: url)
+        var newView = HMSHLSPlayerView(url: url, resetGesture: $resetGesture)
         setupNewView(newView: &newView)
         newView.onResolutionChanged = { value in
             videoSize(value)
@@ -296,75 +255,8 @@ extension HMSHLSPlayerView where VideoOverlay == EmptyView {
 struct HMSHLSPlayerView_Previews: PreviewProvider {
     static var previews: some View {
 #if Preview
-        HMSHLSPlayerView()
+        HMSHLSPlayerView(resetGesture: .constant(false))
             .environmentObject(HMSUITheme())
 #endif
-    }
-}
-
-internal struct HMSHLSViewRepresentable: UIViewRepresentable {
-    let player: HMSHLSPlayer
-    let tapBlock: (() -> Void)?
-    
-    init(player: HMSHLSPlayer, tapBlock: (() -> Void)?) {
-        self.player = player
-        self.tapBlock = tapBlock
-    }
-
-    func makeUIView(context: Context) -> UIView {
-        
-        let videoViewController = player.videoPlayerViewController(showsPlayerControls: false)
-        videoViewController.disableGestureRecognition()
-
-        context.coordinator.panAndZoomController = HMSPanAndZoomController(targetView: videoViewController.view, tapBlock: {
-            tapBlock?()
-        })
-        context.coordinator.panAndZoomController?.isZoomAndPanEnabled = true
-        
-        videoViewController.showsPlaybackControls = false
-        videoViewController.allowsPictureInPicturePlayback = false
-        videoViewController.canStartPictureInPictureAutomaticallyFromInline = false
-        
-        AVPlayerModel.shared.currentAVPlayerInstance = videoViewController
-        
-        return videoViewController.view
-    }
-
-    func updateUIView(_ uiView: UIView, context: Context) {}
-    
-    static func dismantleUIView(_ uiView: UIView, coordinator: Coordinator) {
-        coordinator.panAndZoomController?.isZoomAndPanEnabled = false
-        coordinator.panAndZoomController = nil
-    }
-    
-    class Coordinator: NSObject {
-        var parent: HMSHLSViewRepresentable
-        var panAndZoomController: HMSPanAndZoomController?
-        
-        init(_ parent: HMSHLSViewRepresentable) {
-            self.parent = parent
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-}
-
-extension AVPlayerViewController {
-    func disableGestureRecognition() {
-        let contentView = view.value(forKey: "contentView") as? UIView
-        contentView?.gestureRecognizers = contentView?.gestureRecognizers?.filter { $0 is UITapGestureRecognizer }
-    }
-}
-
-extension UIView {
-    func addConstrained(subview: UIView) {
-        addSubview(subview)
-        subview.translatesAutoresizingMaskIntoConstraints = false
-        subview.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        subview.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        subview.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        subview.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
 }
