@@ -18,6 +18,14 @@ class AVPlayerModel {
     weak var currentAVPlayerInstance: AVPlayerViewController?
 }
 
+public struct HMSPlayerConstants {
+    static let seekBarPadding: CGFloat = 4
+    
+    public static func preferredHeight(for width: CGFloat) -> CGFloat {
+        return (width * 9) / 16 + HMSPlayerConstants.seekBarPadding
+    }
+}
+
 public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
     
     class Coordinator: HMSHLSPlayerDelegate, ObservableObject {
@@ -112,23 +120,23 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
     @Binding var resetGesture: Bool
     
     func videoView(url: URL) -> some View {
-        GeometryReader { geo in
-            
-            ZStack {
-                HMSHLSViewRepresentable(player: coordinator.player, tapBlock: {
-                    hlsPlayerPreferences.isControlsHidden.wrappedValue.toggle()
-                    
-                    if !hlsPlayerPreferences.isControlsHidden.wrappedValue {
-                        hideTasks.append(hideControlsTask)
-                    }
-                    else {
-                        hideTasks.forEach{$0.cancel()}
-                        hideTasks.removeAll()
-                    }
-                    
-                    // hide keyboard it it's present
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }, resetGesture: $resetGesture)
+        VStack {
+            GeometryReader { geo in
+                ZStack {
+                    HMSHLSViewRepresentable(player: coordinator.player, tapBlock: {
+                        hlsPlayerPreferences.isControlsHidden.wrappedValue.toggle()
+                        
+                        if !hlsPlayerPreferences.isControlsHidden.wrappedValue {
+                            hideTasks.append(hideControlsTask)
+                        }
+                        else {
+                            hideTasks.forEach{$0.cancel()}
+                            hideTasks.removeAll()
+                        }
+                        
+                        // hide keyboard it it's present
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    }, resetGesture: $resetGesture)
                     .frame(width: geo.size.width, height: geo.size.height )
                     .onAppear() {
                         hideTasks.append(hideControlsTask)
@@ -148,7 +156,9 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
                             hideTasks.append(hideControlsTask)
                         }
                     }
+                }
             }
+            Spacer().frame(height: HMSPlayerConstants.seekBarPadding)
         }
         .overlay(content: {
             videoOverlay?(coordinator.player)
