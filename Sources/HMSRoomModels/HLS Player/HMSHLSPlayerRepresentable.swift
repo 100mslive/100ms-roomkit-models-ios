@@ -34,6 +34,8 @@ internal struct HMSHLSViewRepresentable: UIViewRepresentable {
         videoViewController.allowsPictureInPicturePlayback = false
         videoViewController.canStartPictureInPictureAutomaticallyFromInline = false
         
+        videoViewController.videoGravity = .resizeAspect
+        
         AVPlayerModel.shared.currentAVPlayerInstance = videoViewController
         
         return videoViewController.view
