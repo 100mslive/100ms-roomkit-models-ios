@@ -53,14 +53,6 @@ public struct HMSHLSPlayerView<VideoOverlay> : View where VideoOverlay : View {
         }
         func onResolutionChanged(videoSize: CGSize) {
             onResolutionChanged?(videoSize)
-            Task { @MainActor in
-                if videoSize.width > videoSize.height {
-                    AVPlayerModel.shared.currentAVPlayerInstance?.videoGravity = .resizeAspect
-                }
-                else {
-                    AVPlayerModel.shared.currentAVPlayerInstance?.videoGravity = .resizeAspectFill
-                }
-            }
         }
     }
     
