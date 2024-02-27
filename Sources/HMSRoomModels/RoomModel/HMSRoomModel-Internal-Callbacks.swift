@@ -22,8 +22,18 @@ extension HMSRoomModel: HMSUpdateListener {
                 insert(peer: localPeer)
             }
         }
-        
+                
         updateStreamingState()
+        
+        updateNoiseCancellation()
+    }
+    
+    private func updateNoiseCancellation() {
+                
+        guard let noiseCancellationPlugin else { return }
+        
+        isNoiseCancellationEnabled = noiseCancellationPlugin.isEnabled()
+        isNoiseCancellationAvailable = noiseCancellationPlugin.isNoiseCancellationAvailable
     }
     
     @MainActor public func on(room: HMSRoom, update: HMSRoomUpdate) {
