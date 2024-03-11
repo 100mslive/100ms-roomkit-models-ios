@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  HMSRoomOptions.swift
 //  
 //
 //  Created by Pawan Dixit on 09/09/2023.
