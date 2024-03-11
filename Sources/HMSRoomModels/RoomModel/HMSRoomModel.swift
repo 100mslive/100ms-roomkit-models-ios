@@ -69,6 +69,11 @@ public class HMSRoomModel: ObservableObject {
     @Published public var sessionStartedAt: Date?
     @Published public var recordingState: HMSRoomRecordingState = .stopped
     @Published public var speakers = [HMSPeerModel]()
+    
+    // Noise cancellation
+    @Published internal var noiseCancellationPlugin: HMSNoiseCancellationPlugin?
+    @Published public internal(set) var isNoiseCancellationAvailable: Bool = false
+    @Published public internal(set) var isNoiseCancellationEnabled: Bool = false
 
     public var isLarge: Bool {
         room?.isLarge ?? false
@@ -115,19 +120,34 @@ public class HMSRoomModel: ObservableObject {
     }
     
     public let options: HMSRoomOptions?
-    public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
+    public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK, HMSAudioTrackSettingsBuilder, HMSVideoTrackSettingsBuilder)->Void)? = nil) {
         self.roomCode = roomCode
         self.providedToken = nil
-        
+
         self.options = options
         self.userName = options?.userName ?? ""
         self.userId = options?.userId
         
+        var noiseCancellationPluginLocal: HMSNoiseCancellationPlugin?
+        
+        if let noiseCancellationParams = options?.noiseCancellation {
+            noiseCancellationPluginLocal = .init(modelPath: noiseCancellationParams.model, initialState: noiseCancellationParams.initialState)
+        }
+                
+        self.noiseCancellationPlugin = noiseCancellationPluginLocal
+                
         self.sdk = HMSSDK.build() { sdk in
             if let groupName = options?.appGroupName {
                 sdk.appGroup = groupName
             }
-            builder?(sdk)
+            sdk.trackSettings = HMSTrackSettings.build { videoSettingsBuilder, audioSettingsBuilder in
+                
+                if let noiseCancellationPluginLocal {
+                    audioSettingsBuilder.noiseCancellationPlugin = noiseCancellationPluginLocal
+                }
+                
+                builder?(sdk, audioSettingsBuilder, videoSettingsBuilder)
+            }
         }
         
         sharedSessionStore = HMSSharedSessionStore()
@@ -138,7 +158,7 @@ public class HMSRoomModel: ObservableObject {
         #endif
     }
     
-    public init(token: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK)->Void)? = nil) {
+    public init(token: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK, HMSAudioTrackSettingsBuilder, HMSVideoTrackSettingsBuilder)->Void)? = nil) {
         self.roomCode = nil
         self.providedToken = token
         
@@ -154,11 +174,26 @@ public class HMSRoomModel: ObservableObject {
             self.userId = nil
         }
         
+        var noiseCancellationPluginLocal: HMSNoiseCancellationPlugin?
+        
+        if let noiseCancellationParams = options?.noiseCancellation {
+            noiseCancellationPluginLocal = .init(modelPath: noiseCancellationParams.model, initialState: noiseCancellationParams.initialState)
+        }
+                
+        self.noiseCancellationPlugin = noiseCancellationPluginLocal
+                
         self.sdk = HMSSDK.build() { sdk in
             if let groupName = options?.appGroupName {
                 sdk.appGroup = groupName
             }
-            builder?(sdk)
+            sdk.trackSettings = HMSTrackSettings.build { videoSettingsBuilder, audioSettingsBuilder in
+                
+                if let noiseCancellationPluginLocal {
+                    audioSettingsBuilder.noiseCancellationPlugin = noiseCancellationPluginLocal
+                }
+                
+                builder?(sdk, audioSettingsBuilder, videoSettingsBuilder)
+            }
         }
         
         sharedSessionStore = HMSSharedSessionStore()
@@ -214,6 +249,8 @@ public class HMSRoomModel: ObservableObject {
         sharedSessionStore.cleanup()
         
         inMemoryStore.removeAll()
+        
+        noiseCancellationPlugin = nil
     }
     
     // Preview states

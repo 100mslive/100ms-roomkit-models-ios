@@ -550,4 +550,18 @@ extension HMSRoomModel {
     public func stopObserving(keys: [String]) {
         sharedSessionStore.stopObserving(keys: keys)
     }
+    
+    public func toggleNoiseCancellation() throws {
+        
+        guard let noiseCancellationPlugin else { return }
+        
+        if isNoiseCancellationEnabled {
+            try noiseCancellationPlugin.disable()
+            isNoiseCancellationEnabled = false
+        }
+        else {
+            try noiseCancellationPlugin.enable()
+            isNoiseCancellationEnabled = true
+        }
+    }
 }
