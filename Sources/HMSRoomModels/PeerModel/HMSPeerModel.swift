@@ -63,6 +63,8 @@ public class HMSPeerModel: ObservableObject {
     
     @Published public internal(set) var role: HMSRole?
     
+    @Published public internal(set) var type: HMSPeerType
+    
     @Published public internal(set) var isTemporary: Bool = false
     
 #if !Preview
@@ -74,6 +76,7 @@ public class HMSPeerModel: ObservableObject {
         self.id = peer.peerID
         
         self.name = peer.name
+        self.type = peer.type
         self.downlinkQuality = peer.networkQuality?.downlinkQuality
         
         self.canScreenShare = peer.role?.publishSettings.allowed?.contains("screen") ?? false
@@ -121,6 +124,7 @@ public class HMSPeerModel: ObservableObject {
         self.metadata = HMSStorage<String, Any>() { _ in}
         self.isVideoDegraded = false
         self.peer = nil
+        self.type = .regular
     }
     public var isLocal = false
 #endif
