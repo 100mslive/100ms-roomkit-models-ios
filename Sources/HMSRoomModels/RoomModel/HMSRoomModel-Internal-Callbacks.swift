@@ -26,6 +26,26 @@ extension HMSRoomModel: HMSUpdateListener {
         updateStreamingState()
         
         updateNoiseCancellation()
+        
+        isWhiteboardAvailable = sdk.interactivityCenter.isWhiteboardEnabled
+        
+        if isWhiteboardAvailable {
+            interactivityCenter.addWhiteboardUpdateListener { [weak self] whiteboard, updateType in
+                
+                guard let self else { return }
+                
+                switch updateType {
+                case .started:
+                    self.whiteboard = whiteboard
+                    break
+                case .stopped:
+                    self.whiteboard = nil
+                    break
+                @unknown default:
+                    break
+                }
+            }
+        }
     }
     
     private func updateNoiseCancellation() {

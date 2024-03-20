@@ -119,6 +119,9 @@ public class HMSRoomModel: ObservableObject {
         sdk.interactivityCenter
     }
     
+    @Published public var isWhiteboardAvailable: Bool = false
+    @Published public var whiteboard: HMSWhiteboard?
+    
     public let options: HMSRoomOptions?
     public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK, HMSAudioTrackSettingsBuilder, HMSVideoTrackSettingsBuilder)->Void)? = nil) {
         self.roomCode = roomCode
