@@ -31,6 +31,10 @@ public enum HMSRoomRecordingState {
     case failed
 }
 
+public enum HMSWhiteboardPermission {
+    case read, write, admin
+}
+
 public class HMSRoomModel: ObservableObject {
     
     internal var joinCancellable: AnyCancellable?
@@ -49,6 +53,7 @@ public class HMSRoomModel: ObservableObject {
     @Published public var isUserJoined: Bool = false
     @Published public var isUserSharingScreen: Bool = false
     @Published public var userCanEndRoom: Bool = false
+    @Published public var userWhiteboardPermissions = Set<HMSWhiteboardPermission>()
     @Published public var userRole: HMSRole?
     
     // Meeting experience states

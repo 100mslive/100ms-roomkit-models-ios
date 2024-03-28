@@ -568,7 +568,7 @@ extension HMSRoomModel {
     public func startWhiteboard(options: HMSWhiteboard.Options) async throws {
         
         return try await withCheckedThrowingContinuation { continuation in
-            sdk.interactivityCenter.startWhiteboard(options: options) { success, error in
+            sdk.interactivityCenter.startWhiteboard(with: options) { success, error in
                 
                 if let error = error {
                     continuation.resume(throwing: error)

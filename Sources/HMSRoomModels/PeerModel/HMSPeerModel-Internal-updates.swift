@@ -42,6 +42,7 @@ extension HMSPeerModel {
         self.canStartStopRecording = peer.role?.permissions.browserRecording ?? false
         if isLocal {
             roomModel?.userCanEndRoom = canEndRoom
+            updateWhiteboardPermission()
         }
         
         roomModel?.objectWillChange.send()
@@ -100,5 +101,24 @@ extension HMSPeerModel {
             }
         }
         roomModel?.objectWillChange.send()
+    }
+}
+
+extension HMSPeerModel {
+    func updateWhiteboardPermission() {
+        if let whiteboardPermissions = role?.permissions.whiteboard {
+            
+            roomModel?.userWhiteboardPermissions.removeAll()
+            
+            if whiteboardPermissions.admin ?? false {
+                roomModel?.userWhiteboardPermissions.insert(.admin)
+            }
+            if whiteboardPermissions.read ?? false {
+                roomModel?.userWhiteboardPermissions.insert(.read)
+            }
+            if whiteboardPermissions.write ?? false {
+                roomModel?.userWhiteboardPermissions.insert(.write)
+            }
+        }
     }
 }

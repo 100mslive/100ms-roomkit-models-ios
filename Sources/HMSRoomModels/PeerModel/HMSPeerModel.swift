@@ -86,9 +86,6 @@ public class HMSPeerModel: ObservableObject {
         self.canStartStopHLSStream = peer.role?.permissions.hlsStreaming ?? false
         self.canStartStopRecording = peer.role?.permissions.browserRecording ?? false
         
-        if peer.isLocal {
-            roomModel?.userCanEndRoom = canEndRoom
-        }
         self.canEndRoom = canEndRoom
         
         self.role = peer.role
@@ -105,6 +102,11 @@ public class HMSPeerModel: ObservableObject {
         
         self.isVideoDegraded = (peer.videoTrack?.isDegraded()) ?? false
         self.isHandRaised = peer.isHandRaised
+        
+        if peer.isLocal {
+            roomModel?.userCanEndRoom = canEndRoom
+            updateWhiteboardPermission()
+        }
         
         updateMetadata()
         
