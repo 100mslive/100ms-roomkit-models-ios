@@ -564,4 +564,32 @@ extension HMSRoomModel {
             isNoiseCancellationEnabled = true
         }
     }
+    
+    public func startWhiteboard() async throws {
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.interactivityCenter.startWhiteboard() { success, error in
+                
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
+    
+    public func stopWhiteboard() async throws {
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.interactivityCenter.stopWhiteboard() { success, error in
+                
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
 }
