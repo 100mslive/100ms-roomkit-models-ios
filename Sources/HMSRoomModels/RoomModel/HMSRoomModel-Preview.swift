@@ -36,7 +36,7 @@ extension HMSRoomModel {
         room.isUserJoined = true
         room.userCanEndRoom = true
         
-        room.transcript = "“People of the same trade seldom meet together, even for merriment and diversion, but the conversation ends in a conspiracy against the public, or in some contrivance to raise prices.” Smith wrote in The Wealth of Nations in 1776, and he has been proved correct time and time again. The first recorded competition law regulated the grain trade in Rome, circa 50 B.C. The British Parliament in 1623 passed the Statute of Monopolies, providing a foundation for U.S. antitrust law."
+        room.transcriptArray = ["“People of the same trade seldom meet together, even for merriment and diversion, but the conversation ends in a conspiracy against the public, or in some contrivance to raise prices.” Smith wrote in The Wealth of Nations in 1776, and he has been proved correct time and time again. The first recorded competition law regulated the grain trade in Rome, circa 50 B.C. The British Parliament in 1623 passed the Statute of Monopolies, providing a foundation for U.S. antitrust law."]
         
         room.sharedStore = HMSSharedStorage(setHandler: { _, _ in
         })

@@ -175,15 +175,15 @@ extension HMSRoomModel: HMSUpdateListener {
         
         
         if !(lastTranscript?.isFinal ?? false) {
-            _ = self.transcript.popLast()
+            _ = self.transcriptArray.popLast()
         }
         
         if peerModel.peer == lastTranscript?.peer {
-            self.transcript += [" " + transcript.transcript]
+            self.transcriptArray += [" " + transcript.transcript]
         }
         else {
-            self.transcript += ["\n\(peerModel.name): "]
-            self.transcript += ["\(transcript.transcript)"]
+            self.transcriptArray += ["\n\(peerModel.name): "]
+            self.transcriptArray += ["\(transcript.transcript)"]
         }
         
         lastTranscript = transcript

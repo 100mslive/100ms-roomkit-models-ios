@@ -18,17 +18,4 @@ extension HMSPeerModel {
     public var screenVideoTrackModel: HMSTrackModel? {
         screenTrackModels.first
     }
-    public func recentTranscript(within timeInterval: TimeInterval) -> [HMSPeerModel.Transcript] {
-        transcript.filter {
-            Date().timeIntervalSince($0.date) < timeInterval
-        }
-    }
-    public func hasRecentTranscript(within timeInterval: TimeInterval) -> Bool {
-        guard let lastTranscript = transcript.last else { return false }
-        return Date().timeIntervalSince(lastTranscript.date) < timeInterval
-    }
-    public func oldestTranscriptTime(within timeInterval: TimeInterval) -> Date {
-        let recentTranscript = recentTranscript(within: timeInterval)
-        return recentTranscript.first?.date ?? Date.distantPast
-    }
 }

@@ -56,8 +56,11 @@ public class HMSRoomModel: ObservableObject {
     @Published public var userWhiteboardPermissions = Set<HMSWhiteboardPermission>()
     @Published public var userRole: HMSRole?
     
-    @Published public var transcript = [String]()
-    @Published internal var lastTranscript: HMSTranscript?
+    public var transcript: String {
+        transcriptArray.joined()
+    }
+    @Published internal var transcriptArray = [String]()
+    internal var lastTranscript: HMSTranscript?
     
     // Meeting experience states
     @Published public var errors = [Error]()
