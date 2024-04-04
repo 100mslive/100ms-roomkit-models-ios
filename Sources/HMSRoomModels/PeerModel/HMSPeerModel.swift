@@ -42,6 +42,12 @@ public class HMSPeerModel: ObservableObject {
     @Published public internal(set) var canStartStopHLSStream = false
     @Published public internal(set) var canStartStopRecording = false
     
+    public struct Transcript {
+        public let date: Date
+        public let string: String
+    }
+    @Published public internal(set) var transcript = [Transcript(date: Date(), string: "")]
+    
     public var customerUserId: String? {
         #if !Preview
         peer.customerUserID
