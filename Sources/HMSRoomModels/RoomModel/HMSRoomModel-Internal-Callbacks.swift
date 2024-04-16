@@ -168,25 +168,27 @@ extension HMSRoomModel: HMSUpdateListener {
         }
     }
     
-    public func on(transcript: HMSTranscript) {
-        
-        guard let peerModel = peerModels.first(where: { $0.peer == transcript.peer }) else { return }
-        guard !transcript.transcript.isEmpty else { return }
-        
-        
-        if !(lastTranscript?.isFinal ?? false) {
-            _ = self.transcriptArray.popLast()
+    
+    public func on(transcripts: HMSTranscripts) {
+        transcripts.transcripts.forEach { transcript in
+            guard let peerModel = peerModels.first(where: { $0.peer == transcript.peer }) else { return }
+            guard !transcript.transcript.isEmpty else { return }
+            
+            
+            if !(lastTranscript?.isFinal ?? false) {
+                _ = self.transcriptArray.popLast()
+            }
+            
+            if peerModel.peer == lastTranscript?.peer {
+                self.transcriptArray += [" " + transcript.transcript]
+            }
+            else {
+                self.transcriptArray += ["\n\(peerModel.name): "]
+                self.transcriptArray += ["\(transcript.transcript)"]
+            }
+            
+            lastTranscript = transcript
         }
-        
-        if peerModel.peer == lastTranscript?.peer {
-            self.transcriptArray += [" " + transcript.transcript]
-        }
-        else {
-            self.transcriptArray += ["\n\(peerModel.name): "]
-            self.transcriptArray += ["\(transcript.transcript)"]
-        }
-        
-        lastTranscript = transcript
     }
     
     @MainActor public func on(updated speakers: [HMSSpeaker]) {
