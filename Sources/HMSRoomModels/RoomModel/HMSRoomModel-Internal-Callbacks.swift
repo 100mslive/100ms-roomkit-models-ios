@@ -172,8 +172,6 @@ extension HMSRoomModel: HMSUpdateListener {
     public func on(transcripts: HMSTranscripts) {
         transcripts.transcripts.forEach { transcript in
             guard let peerModel = peerModels.first(where: { $0.peer == transcript.peer }) else { return }
-            guard !transcript.transcript.isEmpty else { return }
-            
             
             if !(lastTranscript?.isFinal ?? false) {
                 _ = self.transcriptArray.popLast()
@@ -183,7 +181,13 @@ extension HMSRoomModel: HMSUpdateListener {
                 self.transcriptArray += [" " + transcript.transcript]
             }
             else {
-                self.transcriptArray += ["\n\(peerModel.name): "]
+                // if last transcript was not final pop the speaker label as well
+                if !(lastTranscript?.isFinal ?? false) {
+                    if transcriptArray.last?.contains(":") ?? false {
+                        _ = self.transcriptArray.popLast()
+                    }
+                }
+                self.transcriptArray += ["\n**\(peerModel.name.trimmingCharacters(in: .whitespacesAndNewlines)):** "]
                 self.transcriptArray += ["\(transcript.transcript)"]
             }
             
