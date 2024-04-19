@@ -36,6 +36,8 @@ extension HMSRoomModel {
         room.isUserJoined = true
         room.userCanEndRoom = true
         
+        room.transcriptArray = ["“People of the same trade seldom meet together, even for merriment and diversion, but the conversation ends in a conspiracy against the public, or in some contrivance to raise prices.” Smith wrote in The Wealth of Nations in 1776, and he has been proved correct time and time again. The first recorded competition law regulated the grain trade in Rome, circa 50 B.C. The British Parliament in 1623 passed the Statute of Monopolies, providing a foundation for U.S. antitrust law."]
+        
         room.sharedStore = HMSSharedStorage(setHandler: { _, _ in
         })
         room.pinnedMessages = [.init(text: "Pawan: hello there", id: "1", pinnedBy: "local user"), .init(text: "Dmitry: what's up", id: "2", pinnedBy: "user 1"), .init(text: "Nihal: this message is supposed to be very long so that we can see how a multiline pinned message will look like in the UI. this message is supposed https://stackoverflow.com/questions/57744392/how-to-make-hyperlinks-in-swiftui to be very long so that we can see how a multiline pinned message will look like in the UI.", id: "3", pinnedBy: "remote user")]
