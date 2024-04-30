@@ -76,7 +76,7 @@ extension HMSRoomModel: HMSUpdateListener {
         case .peerCountUpdated:
             peerCount = room.peerCount
         case .transcriptionStateUpdated:
-            transcriptionStates = room.transcriptionStates
+            transcriptionStates = room.transcriptionStates ?? []
         @unknown default:
             break
         }
@@ -86,7 +86,7 @@ extension HMSRoomModel: HMSUpdateListener {
         added.forEach { if !$0.isLocal { insert(peer: $0) } }
         removed.forEach { remove(peer: $0) }
         
-        transcriptionStates = room?.transcriptionStates
+        transcriptionStates = room?.transcriptionStates ?? []
     }
     
     @MainActor public func on(peer: HMSPeer, update: HMSPeerUpdate) {
