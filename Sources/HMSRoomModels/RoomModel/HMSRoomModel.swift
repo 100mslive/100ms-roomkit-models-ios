@@ -56,6 +56,10 @@ public class HMSRoomModel: ObservableObject {
     @Published public var userWhiteboardPermissions = Set<HMSWhiteboardPermission>()
     @Published public var userRole: HMSRole?
     
+    public var isTranscriptionAvailable: Bool {
+        transcriptionStates.first{$0.state == .started} != nil
+    }
+    public internal(set) var transcriptionStates = [HMSTranscriptionState]()
     public var transcript: String {
         transcriptArray.joined()
     }
