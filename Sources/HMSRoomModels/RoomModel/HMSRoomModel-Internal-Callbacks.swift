@@ -24,6 +24,7 @@ extension HMSRoomModel: HMSUpdateListener {
         }
                 
         updateStreamingState()
+        updateTranscriptionState()
         
         updateNoiseCancellation()
         
@@ -85,8 +86,6 @@ extension HMSRoomModel: HMSUpdateListener {
     @MainActor public func onPeerListUpdate(added: [HMSPeer], removed: [HMSPeer]) {
         added.forEach { if !$0.isLocal { insert(peer: $0) } }
         removed.forEach { remove(peer: $0) }
-        
-        transcriptionStates = room?.transcriptionStates ?? []
     }
     
     @MainActor public func on(peer: HMSPeer, update: HMSPeerUpdate) {
