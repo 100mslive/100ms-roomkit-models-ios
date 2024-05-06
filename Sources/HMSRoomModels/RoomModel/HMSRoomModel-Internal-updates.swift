@@ -146,6 +146,11 @@ extension HMSRoomModel {
             hlsVariants = room.hlsStreamingState.variants
         }
     }
+    
+    func updateTranscriptionState() {
+        guard let room = room else { assertionFailure("shouldn't be here"); return }
+        transcriptionStates = room.transcriptionStates ?? []
+    }
 }
 
 // Peer updates

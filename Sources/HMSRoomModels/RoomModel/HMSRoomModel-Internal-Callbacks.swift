@@ -24,6 +24,7 @@ extension HMSRoomModel: HMSUpdateListener {
         }
                 
         updateStreamingState()
+        updateTranscriptionState()
         
         updateNoiseCancellation()
         
