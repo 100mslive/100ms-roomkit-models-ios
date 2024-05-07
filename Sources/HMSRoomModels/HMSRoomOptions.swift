@@ -18,11 +18,16 @@ public class HMSRoomOptions: ObservableObject {
     
     public let noiseCancellation: HMSNoiseCancellation?
     
-    public init(userName: String? = nil, userId: String? = nil, appGroupName: String? = nil, screenShareBroadcastExtensionBundleId: String? = nil, noiseCancellation: HMSNoiseCancellation? = nil) {
+    public let proxy: HMSProxyConfig?
+    public let iceServers: [HMSICEServer]?
+    
+    public init(userName: String? = nil, userId: String? = nil, appGroupName: String? = nil, screenShareBroadcastExtensionBundleId: String? = nil, noiseCancellation: HMSNoiseCancellation? = nil, proxy: HMSProxyConfig? = nil, iceServers: [HMSICEServer]? = nil) {
         self.appGroupName = appGroupName
         self.screenShareBroadcastExtensionBundleId = screenShareBroadcastExtensionBundleId
         self.userName = userName
         self.userId = userId
         self.noiseCancellation = noiseCancellation
+        self.proxy = proxy
+        self.iceServers = iceServers
     }
 }
