@@ -31,11 +31,16 @@ public enum HMSRoomRecordingState {
     case failed
 }
 
-public enum HMSWhiteboardPermission {
+public enum HMSFeaturePermission {
     case read, write, admin
 }
 
 public class HMSRoomModel: ObservableObject {
+    
+    public struct HMSUserPermissions {
+        public var whiteboardPermissions = Set<HMSFeaturePermission>()
+        public var transcriptionPermissions = Set<HMSFeaturePermission>()
+    }
     
     internal var joinCancellable: AnyCancellable?
     internal var previewCancellable: AnyCancellable?
@@ -53,7 +58,7 @@ public class HMSRoomModel: ObservableObject {
     @Published public var isUserJoined: Bool = false
     @Published public var isUserSharingScreen: Bool = false
     @Published public var userCanEndRoom: Bool = false
-    @Published public var userWhiteboardPermissions = Set<HMSWhiteboardPermission>()
+    @Published public var userPermissions = HMSUserPermissions()
     @Published public var userRole: HMSRole?
     
     public var isTranscriptionAvailable: Bool {

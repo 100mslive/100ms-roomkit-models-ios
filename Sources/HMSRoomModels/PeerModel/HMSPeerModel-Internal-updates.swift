@@ -43,6 +43,7 @@ extension HMSPeerModel {
         if isLocal {
             roomModel?.userCanEndRoom = canEndRoom
             updateWhiteboardPermission()
+            updateTranscriptionPermission()
         }
         
         roomModel?.objectWillChange.send()
@@ -108,16 +109,33 @@ extension HMSPeerModel {
     func updateWhiteboardPermission() {
         if let whiteboardPermissions = role?.permissions.whiteboard {
             
-            roomModel?.userWhiteboardPermissions.removeAll()
+            roomModel?.userPermissions.whiteboardPermissions.removeAll()
             
             if whiteboardPermissions.admin ?? false {
-                roomModel?.userWhiteboardPermissions.insert(.admin)
+                roomModel?.userPermissions.whiteboardPermissions.insert(.admin)
             }
             if whiteboardPermissions.read ?? false {
-                roomModel?.userWhiteboardPermissions.insert(.read)
+                roomModel?.userPermissions.whiteboardPermissions.insert(.read)
             }
             if whiteboardPermissions.write ?? false {
-                roomModel?.userWhiteboardPermissions.insert(.write)
+                roomModel?.userPermissions.whiteboardPermissions.insert(.write)
+            }
+        }
+    }
+    
+    func updateTranscriptionPermission() {
+        if let transcriptionPermissions = role?.permissions.transcription {
+            
+            roomModel?.userPermissions.transcriptionPermissions.removeAll()
+            
+            if transcriptionPermissions.admin ?? false {
+                roomModel?.userPermissions.transcriptionPermissions.insert(.admin)
+            }
+            if transcriptionPermissions.read ?? false {
+                roomModel?.userPermissions.transcriptionPermissions.insert(.read)
+            }
+            if transcriptionPermissions.write ?? false {
+                roomModel?.userPermissions.transcriptionPermissions.insert(.write)
             }
         }
     }

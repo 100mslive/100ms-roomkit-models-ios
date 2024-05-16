@@ -106,6 +106,7 @@ public class HMSPeerModel: ObservableObject {
         if peer.isLocal {
             roomModel?.userCanEndRoom = canEndRoom
             updateWhiteboardPermission()
+            updateTranscriptionPermission()
         }
         
         updateMetadata()
