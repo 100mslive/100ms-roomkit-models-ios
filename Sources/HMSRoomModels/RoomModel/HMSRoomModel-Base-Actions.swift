@@ -57,7 +57,7 @@ extension HMSRoomModel {
         
         // if providedToken is nil our init constrain makes roomCode non-nil
         let authToken = providedToken != nil ? providedToken! : try await getAuthToken(roomCode: roomCode!)
-        self.sdk.preview(config: HMSConfig(userName: self.userName, authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil), delegate: self)
+        self.sdk.preview(config: HMSConfig(userName: self.userName, authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil, proxy: self.options?.proxy, iceServers: self.options?.iceServers), delegate: self)
         
         return try await withCheckedThrowingContinuation { continuation in
             
@@ -94,7 +94,7 @@ extension HMSRoomModel {
         // if providedToken is nil our init constrain makes roomCode non-nil
         let authToken = providedToken != nil ? providedToken! : try await getAuthToken(roomCode: roomCode!)
         
-        self.sdk.join(config: HMSConfig(userName: self.userName, authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil), delegate: self)
+        self.sdk.join(config: HMSConfig(userName: self.userName, authToken: authToken, endpoint: UserDefaults.standard.bool(forKey: "useQAEnv") ? "https://qa-init.100ms.live/init" : nil, proxy: self.options?.proxy, iceServers: self.options?.iceServers), delegate: self)
         
         return try await withCheckedThrowingContinuation { continuation in
             
