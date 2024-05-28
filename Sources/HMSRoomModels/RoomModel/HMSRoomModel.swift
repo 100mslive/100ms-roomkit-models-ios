@@ -39,7 +39,7 @@ public class HMSRoomModel: ObservableObject {
     
     public struct HMSUserPermissions {
         public var whiteboardPermissions = Set<HMSFeaturePermission>()
-        public var transcriptionPermissions = Set<HMSFeaturePermission>()
+        public var transcriptionsPermissions = [HMSTranscriptionPermissions]()
     }
     
     internal var joinCancellable: AnyCancellable?
@@ -61,8 +61,8 @@ public class HMSRoomModel: ObservableObject {
     @Published public var userPermissions = HMSUserPermissions()
     @Published public var userRole: HMSRole?
     
-    public var isTranscriptionAvailable: Bool {
-        transcriptionStates.first{$0.state == .started} != nil
+    public var isTranscriptionStarted: Bool {
+        transcriptionStates.first{$0.mode == "caption"}?.state == .started
     }
     public internal(set) var transcriptionStates = [HMSTranscriptionState]()
     public var transcript: String {
