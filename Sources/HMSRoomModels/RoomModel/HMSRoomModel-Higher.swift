@@ -43,3 +43,9 @@ extension HMSRoomModel {
 #endif
     }
 }
+
+extension [HMSTranscriptionState] {
+    public var captionState: HMSTranscriptionState? {
+        self.first{$0.mode == "caption"}
+    }
+}

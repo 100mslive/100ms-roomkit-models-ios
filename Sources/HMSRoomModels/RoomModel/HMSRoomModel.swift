@@ -62,12 +62,13 @@ public class HMSRoomModel: ObservableObject {
     @Published public var userRole: HMSRole?
     
     public var isTranscriptionStarted: Bool {
-        transcriptionStates.first{$0.mode == "caption"}?.state == .started
+        transcriptionStates.captionState?.state == .started
     }
-    public internal(set) var transcriptionStates = [HMSTranscriptionState]()
     public var transcript: String {
         transcriptArray.joined()
     }
+    
+    @Published public internal(set) var transcriptionStates = [HMSTranscriptionState]()
     @Published internal var transcriptArray = [String]()
     internal var lastTranscript: HMSTranscript?
     
