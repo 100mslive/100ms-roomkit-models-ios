@@ -77,7 +77,7 @@ extension HMSRoomModel: HMSUpdateListener {
         case .peerCountUpdated:
             peerCount = room.peerCount
         case .transcriptionStateUpdated:
-            transcriptionStates = room.transcriptionStates
+            transcriptionStates = room.transcriptionStates ?? []
         @unknown default:
             break
         }
