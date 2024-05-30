@@ -108,27 +108,14 @@ extension HMSPeerModel {
 extension HMSPeerModel {
     func updateWhiteboardPermission() {
         if let whiteboardPermissions = role?.permissions.whiteboard {
-            
-            roomModel?.userPermissions.whiteboardPermissions.removeAll()
-            
-            if whiteboardPermissions.admin ?? false {
-                roomModel?.userPermissions.whiteboardPermissions.insert(.admin)
-            }
-            if whiteboardPermissions.read ?? false {
-                roomModel?.userPermissions.whiteboardPermissions.insert(.read)
-            }
-            if whiteboardPermissions.write ?? false {
-                roomModel?.userPermissions.whiteboardPermissions.insert(.write)
-            }
+            roomModel?.userWhiteboardPermission = whiteboardPermissions
         }
     }
     
     func updateTranscriptionPermission() {
         if let transcriptionsRolePermission = role?.permissions.transcriptions {
-            
-            roomModel?.userPermissions.transcriptionsPermissions.removeAll()
-            
-            roomModel?.userPermissions.transcriptionsPermissions = transcriptionsRolePermission
+            roomModel?.userTranscriptionPermissions.removeAll()
+            roomModel?.userTranscriptionPermissions = transcriptionsRolePermission
         }
     }
 }

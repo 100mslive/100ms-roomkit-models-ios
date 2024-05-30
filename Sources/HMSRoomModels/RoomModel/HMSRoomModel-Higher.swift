@@ -44,8 +44,20 @@ extension HMSRoomModel {
     }
 }
 
-extension [HMSTranscriptionState] {
-    public var captionState: HMSTranscriptionState? {
-        self.first{$0.mode == "caption"}
+public enum HMSTranscriptionMode: String {
+    case caption
+}
+
+public extension [HMSTranscriptionState] {
+    
+    func stateWith(mode: HMSTranscriptionMode) -> HMSTranscriptionState? {
+        self.first{$0.mode == mode.rawValue}
+    }
+}
+
+public extension [HMSTranscriptionPermissions] {
+    
+    func permissionWith(mode: HMSTranscriptionMode) -> HMSTranscriptionPermissions? {
+        self.first{$0.mode == mode.rawValue}
     }
 }
