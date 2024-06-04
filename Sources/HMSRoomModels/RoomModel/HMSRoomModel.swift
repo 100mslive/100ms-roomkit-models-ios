@@ -31,10 +31,6 @@ public enum HMSRoomRecordingState {
     case failed
 }
 
-public enum HMSWhiteboardPermission {
-    case read, write, admin
-}
-
 public class HMSRoomModel: ObservableObject {
     
     internal var joinCancellable: AnyCancellable?
@@ -53,16 +49,18 @@ public class HMSRoomModel: ObservableObject {
     @Published public var isUserJoined: Bool = false
     @Published public var isUserSharingScreen: Bool = false
     @Published public var userCanEndRoom: Bool = false
-    @Published public var userWhiteboardPermissions = Set<HMSWhiteboardPermission>()
+    @Published public var userWhiteboardPermission: HMSWhiteboardPermissions?
+    @Published public var userTranscriptionPermissions = [HMSTranscriptionPermissions]()
     @Published public var userRole: HMSRole?
     
-    public var isTranscriptionAvailable: Bool {
-        transcriptionStates.first{$0.state == .started} != nil
+    public var isTranscriptionStarted: Bool {
+        transcriptionStates.stateWith(mode: .caption)?.state == .started
     }
-    public internal(set) var transcriptionStates = [HMSTranscriptionState]()
     public var transcript: String {
         transcriptArray.joined()
     }
+    
+    @Published public internal(set) var transcriptionStates = [HMSTranscriptionState]()
     @Published internal var transcriptArray = [String]()
     internal var lastTranscript: HMSTranscript?
     

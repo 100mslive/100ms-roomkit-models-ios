@@ -592,4 +592,32 @@ extension HMSRoomModel {
             }
         }
     }
+    
+    public func startTranscription() async throws {
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.startTranscription() { success, error in
+                
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
+    
+    public func stopTranscription() async throws {
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            sdk.stopTranscription() { success, error in
+                
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
 }
