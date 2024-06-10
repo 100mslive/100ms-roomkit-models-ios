@@ -28,7 +28,6 @@ extension HMSPeerModel {
     }
     
     func updateRole() {
-        #if !Preview
         role = peer.role
         updateMetadata()
         
@@ -40,14 +39,15 @@ extension HMSPeerModel {
         self.canEndRoom = peer.role?.permissions.endRoom ?? false
         self.canStartStopHLSStream = peer.role?.permissions.hlsStreaming ?? false
         self.canStartStopRecording = peer.role?.permissions.browserRecording ?? false
+        self.canUseNoiseCancellation = peer.role?.permissions.noiseCancellation?.enabled ?? false
         if isLocal {
             roomModel?.userCanEndRoom = canEndRoom
             updateWhiteboardPermission()
             updateTranscriptionPermission()
+            roomModel?.userCanUseNoiseCancellation = canUseNoiseCancellation
         }
         
         roomModel?.objectWillChange.send()
-        #endif
     }
     
     func updateName() {

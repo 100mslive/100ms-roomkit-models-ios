@@ -41,6 +41,7 @@ public class HMSPeerModel: ObservableObject {
     @Published public internal(set) var canEndRoom: Bool = false
     @Published public internal(set) var canStartStopHLSStream = false
     @Published public internal(set) var canStartStopRecording = false
+    @Published public internal(set) var canUseNoiseCancellation = false
     
     public var customerUserId: String? {
         #if !Preview
@@ -87,6 +88,7 @@ public class HMSPeerModel: ObservableObject {
         self.canStartStopRecording = peer.role?.permissions.browserRecording ?? false
         
         self.canEndRoom = canEndRoom
+        self.canUseNoiseCancellation = peer.role?.permissions.noiseCancellation?.enabled ?? false
         
         self.role = peer.role
         
@@ -107,6 +109,7 @@ public class HMSPeerModel: ObservableObject {
             roomModel?.userCanEndRoom = canEndRoom
             updateWhiteboardPermission()
             updateTranscriptionPermission()
+            roomModel?.userCanUseNoiseCancellation = canUseNoiseCancellation
         }
         
         updateMetadata()
