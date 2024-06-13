@@ -51,6 +51,7 @@ public class HMSRoomModel: ObservableObject {
     @Published public var userCanEndRoom: Bool = false
     @Published public var userWhiteboardPermission: HMSWhiteboardPermissions?
     @Published public var userTranscriptionPermissions = [HMSTranscriptionPermissions]()
+    @Published public var userCanUseNoiseCancellation: Bool = false
     @Published public var userRole: HMSRole?
     
     public var isTranscriptionStarted: Bool {
