@@ -88,6 +88,11 @@ public class HMSRoomModel: ObservableObject {
     @Published internal var noiseCancellationPlugin: HMSNoiseCancellationPlugin?
     @Published public internal(set) var isNoiseCancellationAvailable: Bool = false
     @Published public internal(set) var isNoiseCancellationEnabled: Bool = false
+    
+    // Video plugins
+    internal var videoPlugins = [HMSVideoPlugin]()
+    internal var virtualBackgroundPlugin: HMSVirtualBackgroundPlugin?
+    @Published public var isVirtualBackgroundEnabled = false
 
     public var isLarge: Bool {
         room?.isLarge ?? false
@@ -136,6 +141,30 @@ public class HMSRoomModel: ObservableObject {
     @Published public var isWhiteboardAvailable: Bool = false
     @Published public var whiteboard: HMSWhiteboard?
     
+    private static func createHMSSDK(options: HMSRoomOptions?, noiseCancellationPlugin: HMSNoiseCancellationPlugin?, videoPlugins: [HMSVideoPlugin], builder: ((HMSSDK, HMSAudioTrackSettingsBuilder, HMSVideoTrackSettingsBuilder)->Void)? = nil) -> HMSSDK {
+        
+        func configureSDK(sdk: HMSSDK, audioSettingsBuilder: HMSAudioTrackSettingsBuilder, videoSettingsBuilder: HMSVideoTrackSettingsBuilder, videoPlugins: [HMSVideoPlugin]) {
+            
+            if let noiseCancellationPlugin {
+                audioSettingsBuilder.noiseCancellationPlugin = noiseCancellationPlugin
+            }
+            videoSettingsBuilder.videoPlugins = videoPlugins
+        }
+        
+        return HMSSDK.build() { sdk in
+            if let groupName = options?.appGroupName {
+                sdk.appGroup = groupName
+            }
+            
+            sdk.trackSettings = HMSTrackSettings.build { videoSettingsBuilder, audioSettingsBuilder in
+                
+                configureSDK(sdk: sdk, audioSettingsBuilder: audioSettingsBuilder, videoSettingsBuilder: videoSettingsBuilder, videoPlugins: videoPlugins)
+                
+                builder?(sdk, audioSettingsBuilder, videoSettingsBuilder)
+            }
+        }
+    }
+
     public let options: HMSRoomOptions?
     public init(roomCode: String, options: HMSRoomOptions? = nil, builder: ((HMSSDK, HMSAudioTrackSettingsBuilder, HMSVideoTrackSettingsBuilder)->Void)? = nil) {
         self.roomCode = roomCode
@@ -152,20 +181,18 @@ public class HMSRoomModel: ObservableObject {
         }
                 
         self.noiseCancellationPlugin = noiseCancellationPluginLocal
-                
-        self.sdk = HMSSDK.build() { sdk in
-            if let groupName = options?.appGroupName {
-                sdk.appGroup = groupName
-            }
-            sdk.trackSettings = HMSTrackSettings.build { videoSettingsBuilder, audioSettingsBuilder in
-                
-                if let noiseCancellationPluginLocal {
-                    audioSettingsBuilder.noiseCancellationPlugin = noiseCancellationPluginLocal
-                }
-                
-                builder?(sdk, audioSettingsBuilder, videoSettingsBuilder)
+        
+        if let virtualBackground = options?.virtualBackground {
+            let virtualBackgroundPlugin = HMSVirtualBackgroundPlugin(operatingMode: virtualBackground.operatingMode)
+            self.virtualBackgroundPlugin = virtualBackgroundPlugin
+            videoPlugins.append(virtualBackgroundPlugin)
+            if virtualBackground.initialState == .enabled {
+                virtualBackgroundPlugin.activate()
+                isVirtualBackgroundEnabled = true
             }
         }
+        
+        self.sdk = HMSRoomModel.createHMSSDK(options: options, noiseCancellationPlugin: noiseCancellationPluginLocal, videoPlugins: videoPlugins)
         
         sharedSessionStore = HMSSharedSessionStore()
         sharedSessionStore.roomModel = self
