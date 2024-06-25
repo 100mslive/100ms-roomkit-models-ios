@@ -93,6 +93,7 @@ public class HMSRoomModel: ObservableObject {
     internal var videoPlugins = [HMSVideoPlugin]()
     internal var virtualBackgroundPlugin: HMSVirtualBackgroundPlugin?
     @Published public var isVirtualBackgroundEnabled = false
+    @Published public var virtualBackgroundOperatingMode: HMSVirtualBackgroundPlugin.OperatingMode?
 
     public var isLarge: Bool {
         room?.isLarge ?? false
@@ -189,6 +190,7 @@ public class HMSRoomModel: ObservableObject {
             if virtualBackground.initialState == .enabled {
                 virtualBackgroundPlugin.activate()
                 isVirtualBackgroundEnabled = true
+                virtualBackgroundOperatingMode = virtualBackground.operatingMode
             }
         }
         

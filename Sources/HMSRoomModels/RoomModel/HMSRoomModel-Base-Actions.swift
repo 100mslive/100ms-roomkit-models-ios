@@ -641,5 +641,6 @@ extension HMSRoomModel {
             throw NSError(domain: "VirtualBackground", code: 1001, userInfo: nil)
         }
         virtualBackgroundPlugin.operatingMode = operatingMode
+        virtualBackgroundOperatingMode = operatingMode
     }
 }
