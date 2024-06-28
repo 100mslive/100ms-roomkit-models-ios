@@ -41,8 +41,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "HMSSDK",
-            url: "https://github.com/100mslive/100ms-ios-sdk/releases/download/1.12.0/HMSSDK.xcframework.zip",
-            checksum: "ad64662e9f2ba7e702d98619445ca2460adcc74451acd3050dbe6b5a2f32e558"
+            url: "https://github.com/100mslive/100ms-ios-sdk/releases/download/1.13.0/HMSSDK.xcframework.zip",
+            checksum: "923027489e704534cad8c5f2209b469677635cbd50b6545df4410222a78319a5"
         ),
         .binaryTarget(
             name: "HMSAnalyticsSDK",
