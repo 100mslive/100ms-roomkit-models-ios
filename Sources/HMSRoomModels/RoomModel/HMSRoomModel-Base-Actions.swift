@@ -620,4 +620,27 @@ extension HMSRoomModel {
             }
         }
     }
+    
+    public func toggleVirtualBackground() throws {
+        guard let virtualBackgroundPlugin else {
+            throw NSError(domain: "VirtualBackground", code: 1000, userInfo: nil)
+        }
+        
+        if isVirtualBackgroundEnabled {
+            virtualBackgroundPlugin.deactivate()
+            isVirtualBackgroundEnabled = false
+        }
+        else {
+            virtualBackgroundPlugin.activate()
+            isVirtualBackgroundEnabled = true
+        }
+    }
+    
+    public func updateVirtualBackground(with operatingMode: HMSVirtualBackgroundPlugin.OperatingMode) throws {
+        guard let virtualBackgroundPlugin else {
+            throw NSError(domain: "VirtualBackground", code: 1001, userInfo: nil)
+        }
+        virtualBackgroundPlugin.operatingMode = operatingMode
+        virtualBackgroundOperatingMode = operatingMode
+    }
 }
