@@ -643,4 +643,16 @@ extension HMSRoomModel {
         virtualBackgroundPlugin.operatingMode = operatingMode
         virtualBackgroundOperatingMode = operatingMode
     }
+    
+    public func submitFeedback(_ feedback: HMSSessionFeedback) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            HMSSDK.submitFeedback(feedback) { success, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
 }
