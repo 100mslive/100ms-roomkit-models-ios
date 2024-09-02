@@ -165,7 +165,12 @@ extension HMSRoomModel {
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {
-                    self.roomState = .leftMeeting(reason: .userLeft)
+                    switch (self.roomState) {
+                    case .inMeeting:
+                        self.roomState = .leftMeeting(reason: .userLeft)
+                    default:
+                        self.roomState = .leftMeeting(reason: .leftPreview)
+                    }
                     continuation.resume()
                 }
             }
