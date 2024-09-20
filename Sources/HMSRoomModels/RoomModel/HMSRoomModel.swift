@@ -17,6 +17,7 @@ public enum HMSRoomState {
         case roomEnded(reasonString: String)
         case userLeft
         case removedFromRoom(reasonString: String)
+        case leftPreview
     }
     
     case notJoined
