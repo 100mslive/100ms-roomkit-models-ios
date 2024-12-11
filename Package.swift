@@ -41,8 +41,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "HMSSDK",
-            url: "https://github.com/100mslive/100ms-ios-sdk/releases/download/1.16.2/HMSSDK.xcframework.zip",
-            checksum: "262bf9f7c0844aeb624d583abc8eefac03f6715c27fbf69b5fef1d6b15676420"
+            url: "https://github.com/100mslive/100ms-ios-sdk/releases/download/1.16.7/HMSSDK.xcframework.zip",
+            checksum: "67228edf837f6a2d7818e4b3ae1d2245ad625392f765f72de6c8024eceec5033"
         ),
         .binaryTarget(
             name: "HMSAnalyticsSDK",
@@ -56,8 +56,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "WebRTC",
-            url: "https://github.com/100mslive/webrtc-ios/releases/download/1.0.6171/WebRTC.xcframework.zip",
-            checksum: "29bc00b163c3de382f53fdfe6f4ceacb1b67f45072231244e7b0dc0bcb413317"
+            url: "https://github.com/100mslive/webrtc-ios/releases/download/1.0.6172/WebRTC.xcframework.zip",
+            checksum: "4b4e0d6fe7934deb544ec0c812bf00665c8b57b210573ad58be9e7d7c4c590f6"
         ),
         .binaryTarget(
             name: "HMSBroadcastExtensionSDK",
