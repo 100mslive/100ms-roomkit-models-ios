@@ -24,8 +24,8 @@ let package = Package(
             name: "HMSBroadcastExtensionSDK",
             targets: ["HMSBroadcastExtensionSDK"]),
         .library(
-            name: "WebRTC",
-            targets: ["WebRTC"]),
+            name: "HMSWebRTC",
+            targets: ["HMSWebRTC"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -37,12 +37,12 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "HMSRoomModels",
-            dependencies: [.product(name: "JWTDecode", package: "JWTDecode.swift"), .byName(name: "HMSHLSPlayerSDK"), .byName(name: "HMSSDK"), .byName(name: "HMSAnalyticsSDK"), .byName(name: "WebRTC"), .byName(name: "HMSBroadcastExtensionSDK")]
+            dependencies: [.product(name: "JWTDecode", package: "JWTDecode.swift"), .byName(name: "HMSHLSPlayerSDK"), .byName(name: "HMSSDK"), .byName(name: "HMSAnalyticsSDK"), .byName(name: "HMSWebRTC"), .byName(name: "HMSBroadcastExtensionSDK")]
         ),
         .binaryTarget(
             name: "HMSSDK",
-            url: "https://github.com/100mslive/100ms-ios-sdk/releases/download/1.16.7/HMSSDK.xcframework.zip",
-            checksum: "67228edf837f6a2d7818e4b3ae1d2245ad625392f765f72de6c8024eceec5033"
+            url: "https://github.com/100mslive/100ms-ios-sdk/releases/download/1.17.0/HMSSDK.xcframework.zip",
+            checksum: "9eba80db214353c9501e5edd3e9b93b3b49f5d6230d25f10cc7e970ecbe8891d"
         ),
         .binaryTarget(
             name: "HMSAnalyticsSDK",
@@ -55,9 +55,9 @@ let package = Package(
             checksum: "470932129c8dd358ebbe748bc1e05739f33c642779513fee17e42a117329dce2"
         ),
         .binaryTarget(
-            name: "WebRTC",
-            url: "https://github.com/100mslive/webrtc-ios/releases/download/1.0.6172/WebRTC.xcframework.zip",
-            checksum: "4b4e0d6fe7934deb544ec0c812bf00665c8b57b210573ad58be9e7d7c4c590f6"
+            name: "HMSWebRTC",
+            url: "https://github.com/100mslive/webrtc-ios/releases/download/1.0.6173/HMSWebRTC.xcframework.zip",
+            checksum: "629db2db22918b716175886454aaa3c0c1f03b0761578ba89cab257d4100e278"
         ),
         .binaryTarget(
             name: "HMSBroadcastExtensionSDK",
